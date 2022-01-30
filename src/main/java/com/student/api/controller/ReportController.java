@@ -27,6 +27,13 @@ public class ReportController {
 	
 	@Autowired
 	private ReportServiceImpl service;
+
+        @Operation(summary = "Welcome Message")
+	@GetMapping(path = "/")
+	public String welcomeMessage()
+	{
+		return "Welcome to the Dillip API Community";
+	}
 	
 	@Operation(summary = "Download Weight Slip in PDF")
 	@PostMapping(path = "/weightslip")
