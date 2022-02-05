@@ -30,9 +30,9 @@ public class ReportController {
 
         @Operation(summary = "Welcome Message")
 	@GetMapping(path = "/")
-	public String welcomeMessage()
+	public void startApi()
 	{
-		return "Welcome to the Dillip API Community";
+		service.startReportApi();
 	}
 	
 	@Operation(summary = "Download Weight Slip in PDF")
