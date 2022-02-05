@@ -39,6 +39,11 @@ public class ReportServiceImpl {
 	private ReportEntityRepository repository;
 
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	
+	public void startReportApi()
+	{
+		LOGGER.log(Level.INFO, "##############################Report API has been started###################################");
+	}
 
 	public ResponseEntity<byte[]> exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
 		LOGGER.log(Level.INFO, "Hitting exportReport() method in Service Layer");
