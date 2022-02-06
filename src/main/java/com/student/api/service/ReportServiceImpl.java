@@ -40,9 +40,12 @@ public class ReportServiceImpl {
 
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	public void startReportApi()
+	public Map<String, String> startReportApi()
 	{
 		LOGGER.log(Level.INFO, "##############################Report API has been started###################################");
+		Map<String, String> hello = new HashMap<>();
+		hello.put("message", "API has been started");
+		return hello;
 	}
 
 	public ResponseEntity<byte[]> exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
@@ -163,5 +166,8 @@ public class ReportServiceImpl {
 			e.printStackTrace();
 		}
 		return reRespopnse;
+	}
+	public void deleteWeightSlip() {
+		repository.deleteAll();
 	}
 }
