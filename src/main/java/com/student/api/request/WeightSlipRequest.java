@@ -73,9 +73,9 @@ public class WeightSlipRequest {
 		this.message = message;
 	}
 	public boolean isChecked() {
-		return isChecked;
+		return checked;
 	}
-	public void setChecked(boolean isChecked) {
-		this.isChecked = isChecked;
+	public void setChecked(boolean checked) {
+		this.checked = checked;
 	}
 }
