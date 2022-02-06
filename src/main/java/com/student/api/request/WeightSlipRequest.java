@@ -12,7 +12,7 @@ public class WeightSlipRequest {
 	private String grossWeightTime;
 	private String tareWeightTime;
 	private String message;
-	private boolean isChecked;
+	private boolean checked;
 	
 	public WeightSlipRequest() {
 		super();
