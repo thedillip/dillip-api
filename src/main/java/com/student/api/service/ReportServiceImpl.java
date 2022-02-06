@@ -50,11 +50,11 @@ public class ReportServiceImpl {
 
 	public ResponseEntity<byte[]> exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
 		LOGGER.log(Level.INFO, "Hitting exportReport() method in Service Layer");
-		
-		System.out.println("#########################################"+weightSlipRequest.isChecked());
-		
 		if(weightSlipRequest.isChecked())
+		{
 			saveWeightSlipDetails(weightSlipRequest);
+			LOGGER.log(Level.INFO, "############################# Weight Slip Details Saved Successfully in the PostgresSQL Database #######################");
+		}
 		
 		List<WeightSlipRequest> list = new ArrayList<>();
 		list.add(new WeightSlipRequest());
