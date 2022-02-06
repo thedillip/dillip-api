@@ -12,6 +12,7 @@ public class WeightSlipRequest {
 	private String grossWeightTime;
 	private String tareWeightTime;
 	private String message;
+	private boolean isChecked;
 	
 	public WeightSlipRequest() {
 		super();
@@ -70,5 +71,11 @@ public class WeightSlipRequest {
 	}
 	public void setMessage(String message) {
 		this.message = message;
-	}	
+	}
+	public boolean isChecked() {
+		return isChecked;
+	}
+	public void setChecked(boolean isChecked) {
+		this.isChecked = isChecked;
+	}
 }
