@@ -30,9 +30,9 @@ public class ReportController {
 
         @Operation(summary = "Welcome Message")
 	@GetMapping(path = "/")
-	public void startApi()
+	public Map<String, String> startApi()
 	{
-		service.startReportApi();
+		return service.startReportApi();
 	}
 	
 	@Operation(summary = "Download Weight Slip in PDF")
@@ -56,5 +56,15 @@ public class ReportController {
 	{
 		List<ReportResponse> response = service.findByVehicleNumber(vehicleNumber);
 		return new ResponseEntity<List<ReportResponse>>(response, HttpStatus.OK);
+	}
+	
+	@Operation(summary = "Delete all the weight slip record data from Database")
+	@DeleteMapping(path = "/delete")
+	public ResponseEntity<ApiResponse> deleteAllWeightSlipRecord()
+	{
+		service.deleteWeightSlip();
+		ApiResponse response = new ApiResponse();
+		response.setMessage("All Weight Slip Record Data Deleted Successfully.");
+		return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
 	}
 }
