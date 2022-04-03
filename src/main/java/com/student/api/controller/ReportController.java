@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.student.api.response.ApiResponse;
+import com.student.api.entity.ContactDetails;
 import com.student.api.request.WeightSlipRequest;
 import com.student.api.response.ReportResponse;
 import com.student.api.service.ReportServiceImpl;
@@ -69,4 +70,13 @@ public class ReportController {
 		response.setMessage("All Weight Slip Record Data Deleted Successfully.");
 		return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
 	}
+	
+	@Operation(summary = "Send Email")
+	@PostMapping(path = "/send-email")
+	public ResponseEntity<String> sendEmail(@RequestBody ContactDetails contact)
+	{
+		String message = service.sendEmail(contact);
+		return new ResponseEntity<String>(message, HttpStatus.OK);
+	}
+	
 }

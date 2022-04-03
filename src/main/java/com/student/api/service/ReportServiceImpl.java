@@ -14,8 +14,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.student.api.entity.ContactDetails;
 import com.student.api.entity.ReportEntity;
 import com.student.api.repository.ReportEntityRepository;
 import com.student.api.request.WeightSlipRequest;
@@ -37,6 +40,9 @@ public class ReportServiceImpl {
 	
 	@Autowired
 	private ReportEntityRepository repository;
+	
+	@Autowired
+	private JavaMailSender mailSender;
 
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
@@ -172,5 +178,35 @@ public class ReportServiceImpl {
 	}
 	public void deleteWeightSlip() {
 		repository.deleteAll();
+	}
+	
+	public String sendEmail(ContactDetails contact) {
+
+		String emailBody = "Dear, " + contact.getName() + "\n\n"
+				+ "Thank You for visiting my portfolio !! Thanking you for your valuable feedback that you have shared with us."
+				+ "\n\n"
+				+ "Thanks & Regards \nDillip K Sahoo\nContact Number :- +91 8117941692\nMailto:- lit.dillip2017@gmail.com";
+
+
+		String subject = "Message From DillipFolio Team";
+
+		SimpleMailMessage message = new SimpleMailMessage();
+
+		message.setFrom("dongjinmaster9@gmail.com");
+		message.setTo(contact.getEmail());
+		message.setText(emailBody);
+		message.setSubject(subject);
+
+		mailSender.send(message);
+		
+		System.out.println("EMAIL BODY ##############" + emailBody);
+
+		ContactDetails contactDetails = new ContactDetails();
+		contactDetails.setName(contact.getName());
+		contactDetails.setEmail(contact.getEmail());
+		contactDetails.setMessage(contact.getMessage());
+		contactDetails.setSubject(contact.getSubject());
+
+		return "SUCCESS";
 	}
 }
