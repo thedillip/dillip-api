@@ -73,10 +73,16 @@ public class ReportController {
 	
 	@Operation(summary = "Send Email")
 	@PostMapping(path = "/send-email")
-	public ResponseEntity<String> sendEmail(@RequestBody ContactDetails contact)
+	public ResponseEntity<Map<String, String>> sendEmail(@RequestBody ContactDetails contact)
 	{
+		Map<String, String> data = null;
 		String message = service.sendEmail(contact);
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		if(message.equals("SUCCESS"))
+		{
+			data = new HashMap<>();
+			data.put("message", message);
+		}
+		return new ResponseEntity<Map<String, String>>(data, HttpStatus.OK);
 	}
 	
 }
