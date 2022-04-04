@@ -183,12 +183,13 @@ public class ReportServiceImpl {
 	public String sendEmail(ContactDetails contact) {
 
 		String emailBody = "Dear, " + contact.getName() + "\n\n"
-				+ "Thank You for visiting my portfolio !! Thanking you for your valuable feedback that you have shared with us."
-				+ "\n\n"
-				+ "Thanks & Regards \nDillip K Sahoo\nContact Number :- +91 8117941692\nMailto:- lit.dillip2017@gmail.com";
+				+ "I hope you are having a productive day.\n\nI greatly appreciate the time you spent for visiting my Portfolio.\n\n"
+				+ "Thank you for sharing your valuable feedback - Keep in Touch"
+				+ "\n\nNOTE: This is an auto generated mail. Please do not reply to this message or on this email address.\n\n"
+				+ "Thanks & Regards \nDillip K Sahoo\nContact Number :- +91 8117941692\nMailto:- lit.dillip2017@gmail.com\nWebsite:- https://dillipfolio.web.app";
 
 
-		String subject = "Message From DillipFolio Team";
+		String subject = "Welcome to DillipFolio! – Thanks for joining";
 
 		SimpleMailMessage message = new SimpleMailMessage();
 
