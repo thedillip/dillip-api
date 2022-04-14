@@ -50,7 +50,7 @@ public class ReportServiceImpl {
 	{
 		LOGGER.log(Level.INFO, "##############################Report API has been started###################################");
 		Map<String, String> hello = new HashMap<>();
-		hello.put("message", "API has been started");
+		hello.put("message", "API has been started. API is hosted on Microsoft Azure");
 		return hello;
 	}
 
