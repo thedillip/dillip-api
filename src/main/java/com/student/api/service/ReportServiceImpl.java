@@ -22,6 +22,7 @@ import com.student.api.entity.ContactDetails;
 import com.student.api.entity.ReportEntity;
 import com.student.api.repository.ReportEntityRepository;
 import com.student.api.request.WeightSlipRequest;
+import com.student.api.response.MediaFile;
 import com.student.api.response.ReportResponse;
 
 import java.util.logging.Level;
@@ -54,8 +55,11 @@ public class ReportServiceImpl {
 		return hello;
 	}
 
-	public ResponseEntity<byte[]> exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
+	public MediaFile exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
 		LOGGER.log(Level.INFO, "Hitting exportReport() method in Service Layer");
+		
+		String fileName = "Weight Slip_"+weightSlipRequest.getVehicleNumber()+"_"+formattedDateTime(LocalDateTime.now())+".pdf";
+		
 		if(weightSlipRequest.isChecked())
 		{
 			saveWeightSlipDetails(weightSlipRequest);
@@ -86,11 +90,16 @@ public class ReportServiceImpl {
 		byte[] data = JasperExportManager.exportReportToPdf(jasperPrint);
 
 		HttpHeaders headers = new HttpHeaders();
+		
+		MediaFile mediaFile = new MediaFile();
+		mediaFile.setFileName(fileName);
+		mediaFile.setByteData(data);
+		
 		Date date = new Date();
 		headers.set(HttpHeaders.CONTENT_DISPOSITION,
 				"attachment;filename=Weight Slip_" + String.valueOf(date) + ".pdf");
 		LOGGER.log(Level.INFO, "Generating Report PDF .........");
-		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
+		return mediaFile;
 	}
 
 	public String formattedDate(LocalDateTime date) {
@@ -104,7 +113,7 @@ public class ReportServiceImpl {
 	}
 	
 	public String formattedDateTime(LocalDateTime date) {
-		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd MMMM yyyy  hh : mm : ss a");
+		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm:ss a");
 		return date.format(myFormatObj).toUpperCase();
 	}
 	

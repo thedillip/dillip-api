@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.student.api.response.ApiResponse;
+import com.student.api.response.MediaFile;
 import com.student.api.entity.ContactDetails;
 import com.student.api.request.WeightSlipRequest;
 import com.student.api.response.ReportResponse;
@@ -40,9 +41,10 @@ public class ReportController {
 	
 	@Operation(summary = "Download Weight Slip in PDF")
 	@PostMapping(path = "/weightslip")
-	public ResponseEntity<byte[]> generateReport(@RequestBody WeightSlipRequest weightSlipRequest) throws JRException, IOException
+	public ResponseEntity<MediaFile> generateReport(@RequestBody WeightSlipRequest weightSlipRequest) throws JRException, IOException
 	{
-		return service.exportReport(weightSlipRequest);
+		MediaFile mediaFile = service.exportReport(weightSlipRequest);
+		return new ResponseEntity<>(mediaFile, HttpStatus.OK);
 	}
 	
 	@Operation(summary = "Find All Weight Slip Details")
