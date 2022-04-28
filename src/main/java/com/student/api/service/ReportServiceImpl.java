@@ -58,7 +58,7 @@ public class ReportServiceImpl {
 	public MediaFile exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
 		LOGGER.log(Level.INFO, "Hitting exportReport() method in Service Layer");
 		
-		String fileName = "Weight Slip_"+weightSlipRequest.getVehicleNumber()+"_"+formattedDateTime(LocalDateTime.now())+".pdf";
+		String fileName = "Weight Slip_"+weightSlipRequest.getVehicleNumber().toUpperCase()+"_"+formattedDateTime(LocalDateTime.now())+".pdf";
 		
 		if(weightSlipRequest.isChecked())
 		{
