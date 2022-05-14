@@ -1,4 +1,4 @@
-package com.dillip.api.request;
+package com.dillip.api.dto;
 
 public class UniversityDetailsDTO {
 	private String countryName;

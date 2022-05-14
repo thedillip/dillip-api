@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dillip.api.request.UniversityDetailsDTO;
+import com.dillip.api.dto.UniversityDetailsDTO;
 import com.dillip.api.response.ApiEntity;
 import com.dillip.api.response.ApiResponseObject;
 import com.dillip.api.service.ReportService;

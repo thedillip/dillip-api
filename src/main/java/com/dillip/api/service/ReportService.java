@@ -3,8 +3,8 @@ package com.dillip.api.service;
 import java.io.IOException;
 import java.util.List;
 
+import com.dillip.api.dto.UniversityDetailsDTO;
 import com.dillip.api.entity.ContactDetails;
-import com.dillip.api.request.UniversityDetailsDTO;
 import com.dillip.api.request.WeightSlipRequest;
 import com.dillip.api.response.MediaFile;
 import com.dillip.api.response.ReportResponse;

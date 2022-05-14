@@ -20,10 +20,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.dillip.api.dto.UniversityDetailsDTO;
 import com.dillip.api.entity.ContactDetails;
 import com.dillip.api.entity.ReportEntity;
 import com.dillip.api.repository.ReportEntityRepository;
-import com.dillip.api.request.UniversityDetailsDTO;
 import com.dillip.api.request.WeightSlipRequest;
 import com.dillip.api.response.ConsumeUniversityBody;
 import com.dillip.api.response.MediaFile;
