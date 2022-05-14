@@ -7,7 +7,6 @@ public class MediaFile {
 	private byte[] byteData;
 	public MediaFile() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public MediaFile(String fileName, byte[] byteData) {
 		super();

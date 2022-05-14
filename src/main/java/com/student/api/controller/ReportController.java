@@ -35,7 +35,7 @@ import net.sf.jasperreports.engine.JRException;
 @CrossOrigin
 public class ReportController {
 	
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private final static Logger LOGGER = Logger.getLogger("Dillip Logger");
 	
 	@Autowired
 	private ReportService reportService;

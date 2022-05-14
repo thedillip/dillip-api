@@ -7,6 +7,7 @@ import com.student.api.entity.ContactDetails;
 import com.student.api.request.WeightSlipRequest;
 import com.student.api.response.MediaFile;
 import com.student.api.response.ReportResponse;
+import com.student.api.response.UniversityDetailsDTO;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -22,4 +23,6 @@ public interface ReportService {
 	String deleteAllWeightSlip();
 	
 	String sendEmail(ContactDetails contact);
+	
+	List<UniversityDetailsDTO> getUniversityDetailsByCountryName(String countryName);
 }

@@ -6,7 +6,6 @@ public class ApiEntity<T> extends ApiResponseObject{
 
 	public ApiEntity() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public ApiEntity(T data) 

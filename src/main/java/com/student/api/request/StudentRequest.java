@@ -45,10 +45,7 @@ public class StudentRequest {
 	}
 	@Override
 	public String toString() {
-		return "StudentRequest [name=" + name + ", age=" + age + ", mobileNumber=" + mobileNumber
+		return "StudentRequest [name=" + name + ", age=" + age + ", mobileNumber=" + mobileNumber + ", gender=" + gender
 				+ "]";
 	}
-	
-	
-	
 }

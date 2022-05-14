@@ -1,7 +1,5 @@
 package com.student.api.response;
 
-import java.time.LocalDateTime;
-
 public class ReportResponse {
 	private String address;
 	private String vehicleNumber;

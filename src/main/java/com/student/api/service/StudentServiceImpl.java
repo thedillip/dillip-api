@@ -1,81 +1,169 @@
 package com.student.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.student.api.dto.StudentDTO;
 import com.student.api.entity.Student;
 import com.student.api.repository.StudentRepository;
 import com.student.api.request.StudentRequest;
-import com.student.api.response.StudentResponse;
+import com.student.api.util.ProjectConstant;
 
 
 
 @Service
 public class StudentServiceImpl implements StudentService {
 	
+	private final static Logger LOGGER = Logger.getLogger("Dillip Logger");
+	
 	@Autowired
-	private StudentRepository repository;
-
+	private StudentRepository studentRepository;
+	
+	
 	@Override
-	public List<Student> findAll() {
-		List<Student> reStudent = repository.findAll();
-		return reStudent;
-	}
+	public String addStudent(StudentRequest student) {
 
-	@Override
-	public StudentResponse deleteStudentById(int rollNo) {
-		StudentResponse response = new StudentResponse();
-		
-		List<Student> list = repository.findByRollNo(rollNo);
-		
-		if(list.size() == 0)
-		{
-			response.setMessage("Student Record is not present with this Roll Number "+rollNo);
-		}
-		else {
-			repository.deleteById(rollNo);
-			response.setMessage("Student Record deleted successfully having the Roll Number "+rollNo);
-		}
-		return response;
-	}
+		Student reStudent = null;
+		String message = ProjectConstant.ERR_MSG;
 
-	@Override
-	public StudentResponse updateStudentById(int rollNo,StudentRequest student) {
-		StudentResponse response = new StudentResponse();
-		List<Student> list = repository.findByRollNo(rollNo);
-		Student reStudent = new Student();
-		if (list.get(0).getRollNo()==rollNo) {
+		try {
+			reStudent = new Student();
 			reStudent.setStudentName(student.getName());
 			reStudent.setAge(student.getAge());
 			reStudent.setGender(student.getGender());
 			reStudent.setMobileNumber(student.getMobileNumber());
-			repository.save(reStudent);
-			response.setMessage("Student Record Updated Successfully with Roll Number => "+rollNo);
+			studentRepository.save(reStudent);
+			LOGGER.log(Level.INFO, "################ Student Record has been added Successfully ##############");
+			message = ProjectConstant.SUCCESS_MSG;
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
 		}
-		else
-		{
-			response.setMessage("No Student is Present in DB with this Roll Number");
-		}
-		return response;
+
+		return message;
 	}
 
 	@Override
-	public List<Student> findById(int rollNo) {
-		List<Student> reStudent = repository.findByRollNo(rollNo);
-		return reStudent;
-	}
-
-	@Override
-	public Student addStudent(StudentRequest student) {
-		Student reStudent = new Student();
+	public List<StudentDTO> findAllStudentDetails() {
 		
-			reStudent.setStudentName(student.getName());
-			reStudent.setAge(student.getAge());
-			reStudent.setGender(student.getGender());
-			reStudent.setMobileNumber(student.getMobileNumber());
-			
-			return repository.save(reStudent);
+		List<Student> student = null;
+		List<StudentDTO> retList = new ArrayList<>();
+		
+		try 
+		{
+			student = studentRepository.findAll();
+			for(Student tempStudent : student)
+			{
+				StudentDTO tempStudentDto = new StudentDTO();
+				tempStudentDto.setStudentName(tempStudent.getStudentName());
+				tempStudentDto.setMobileNumber(tempStudent.getMobileNumber());
+				tempStudentDto.setGender(tempStudent.getGender());
+				tempStudentDto.setAge(tempStudent.getAge());
+				tempStudentDto.setRollNumber(tempStudent.getRollNo());
+				retList.add(tempStudentDto);
+			}
+		} 
+		catch (Exception e) 
+		{
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+		}
+		return retList;
 	}
 	
+	@Override
+	public StudentDTO findStudentDetailsByRollNumber(int rollNo){
+		Optional<Student> student = null;
+		StudentDTO reStudent = null;
+		
+		try {
+			student = studentRepository.findById(rollNo);
+			if (student.isPresent()) {
+				Student tempStudent = student.get();
+				reStudent = new StudentDTO();
+				reStudent.setStudentName(tempStudent.getStudentName());
+				reStudent.setMobileNumber(tempStudent.getMobileNumber());
+				reStudent.setGender(tempStudent.getGender());
+				reStudent.setAge(tempStudent.getAge());
+				reStudent.setRollNumber(tempStudent.getRollNo());
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+		}
+		return reStudent;
+	}
+	
+	@Override
+	public String updateStudentDetailsByRollNumber(int rollNo,StudentRequest studentRequest) {
+		String message = null;
+		Optional<Student> student = null;
+		try {
+			student = studentRepository.findById(rollNo);
+			if(student.isPresent())
+			{
+				Student tempStudent = student.get();
+				tempStudent.setStudentName(studentRequest.getName());
+				tempStudent.setMobileNumber(studentRequest.getMobileNumber());
+				tempStudent.setGender(studentRequest.getGender());
+				tempStudent.setAge(studentRequest.getAge());
+				studentRepository.save(tempStudent);
+				LOGGER.log(Level.INFO, "############# Student Resource has been Updated Successfully ##########");
+				message = ProjectConstant.SUCCESS_MSG;
+			}
+			else
+				message = ProjectConstant.NOT_PRESENT;
+				
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = ProjectConstant.ERR_MSG;
+		}
+		return message;
+	}
+
+	@Override
+	public String deleteStudentByRollNumber(int rollNo) {
+		String message = null;
+		Optional<Student> student = null;
+		
+		try {
+			student = studentRepository.findById(rollNo);
+			if(student.isPresent())
+			{
+				Student tempStudent = student.get();
+				studentRepository.deleteById(tempStudent.getRollNo());
+				LOGGER.log(Level.INFO, "############# Student Resource has been Deleted Successfully ##########");
+				message = ProjectConstant.SUCCESS_MSG;
+			}
+			else
+				message = ProjectConstant.NOT_PRESENT;
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = ProjectConstant.ERR_MSG;
+		}
+		return message;
+	}
+
+	@Override
+	public String deleteAllStudent() {
+		String message = null;
+		try {
+			List<Student> student = studentRepository.findAll();
+			if(!student.isEmpty())
+			{
+				studentRepository.deleteAll();
+				LOGGER.log(Level.INFO, "############# All Student Resource has been Deleted Successfully ##########");
+				message = ProjectConstant.SUCCESS_MSG;
+			}
+			else
+				message = ProjectConstant.NOT_PRESENT;
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = ProjectConstant.ERR_MSG;
+		}
+		return message;
+	}
 }

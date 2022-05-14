@@ -1,133 +1,224 @@
 package com.student.api.controller;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.student.api.dto.StudentDTO;
-import com.student.api.entity.Student;
-import com.student.api.exception.StudentException;
 import com.student.api.request.StudentRequest;
-import com.student.api.response.StudentResponse;
+import com.student.api.response.ApiEntity;
+import com.student.api.response.ApiResponseObject;
 import com.student.api.service.StudentService;
+import com.student.api.util.ProjectConstant;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 @RestController
-@RequestMapping(path = "/api")
 @CrossOrigin
 public class StudentController {
 	
+	private final static Logger LOGGER = Logger.getLogger("Dillip Logger");
+	
 	@Autowired
-	private StudentService service;
+	private StudentService studentService;
 	
 	@Operation(summary = "saveStudentDetails")
-	@RequestMapping(path = "/student",consumes = "application/json",produces = "application/json",method = RequestMethod.POST)
-	public ResponseEntity<?> addStudent(@RequestBody StudentRequest studentRequest)
+	@PostMapping(path = "/student",consumes = "application/json",produces = "application/json")
+	public ResponseEntity<ApiResponseObject> addStudent(
+			@Parameter(name = "in_StudentRequest",description = "StudentRequest",required = true) @RequestBody StudentRequest studentRequest)
 	{	
-		final String message = "Student Record Added Successfully !!";
-		HttpStatus status = HttpStatus.CREATED;
-		StudentResponse response = new StudentResponse();
+		
+		HttpStatus status = null;
+		HttpHeaders httpHeaders = new HttpHeaders();
+		String message = null;
+		String response = null;
+		LOGGER.log(Level.INFO, "############# addStudent() :: StudentRequest :: " + studentRequest);
 		try {
-			response.setMessage(message);
-			service.addStudent(studentRequest);
-			return new ResponseEntity<StudentResponse>(response,status);
-			
-		}catch (StudentException e) {
-			StudentException se = new StudentException(e.getErrorCode(),e.getErrorMessage(), e.getDescription());
-			return new ResponseEntity<StudentException>(se,HttpStatus.BAD_REQUEST);
+			response = studentService.addStudent(studentRequest);
+			if(response.equals(ProjectConstant.SUCCESS_MSG))
+			{
+				message = ProjectConstant.CREATED_MSG;
+				status = HttpStatus.CREATED;
+			}
+			else
+			{
+				message = "Sorry ! An Error Occured While Saving the Resource";
+				status = HttpStatus.BAD_REQUEST;
+			}
 		} catch (Exception e) {
-			String errorMessage = e.toString();
-			status = HttpStatus.BAD_REQUEST;
-			response.setMessage(errorMessage);
-			return new ResponseEntity<StudentResponse>(response,status);
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		
+		return new ResponseEntity<>(new ApiEntity<String>(message, response), httpHeaders, status);
 	}
 	
 	@Operation(summary = "getAllStudentsDetails")
-	@RequestMapping(path = "/students",produces = "application/json",method = RequestMethod.GET)
-	public ResponseEntity<StudentDTO> findAll()
+	@GetMapping(path = "/student",produces = "application/json")
+	public ResponseEntity<ApiResponseObject> findAllStudentDetails()
 	{
-		String message = "Student Details Found";
 		HttpStatus status = null;
-		
-		List<Student> list = service.findAll();
-		StudentDTO dto = new StudentDTO();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		String message = null;
+		List<StudentDTO> response = null;
 		
 		try {
-			if (list.size() == 0) {
-				status = HttpStatus.NOT_FOUND;
-				message = "No Record Found";
-				dto.setMessage(message);
-			}else {
+			response = studentService.findAllStudentDetails();
+			if (!response.isEmpty()) 
+			{
+				message = ProjectConstant.DATA_FOUND;
 				status = HttpStatus.OK;
-				dto.setMessage(message);
-				dto.setData(list);
 			}
-			return new ResponseEntity<StudentDTO>(dto,status);
+			else
+			{
+				message = ProjectConstant.DATA_NOT_FOUND;
+				status = HttpStatus.NOT_FOUND;
+			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			String errorMessage = e.toString();
-			dto.setMessage(errorMessage);
-			status = HttpStatus.BAD_REQUEST;
-			return new ResponseEntity<StudentDTO>(dto,status);
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
+		
+		return new ResponseEntity<>(new ApiEntity<List<StudentDTO>>(message, response), httpHeaders, status);
 	}
 	
 	@Operation(summary = "getStudentDetailsByRollNo")
-	@RequestMapping(path = "/student/{roll_no}",produces = "application/json",method = RequestMethod.GET)
-	public ResponseEntity<StudentDTO> findById(@PathVariable(name = "roll_no") int rollNo)
+	@GetMapping(path = "/student/{roll_no}",produces = "application/json")
+	public ResponseEntity<ApiResponseObject> findStudentDetailsByRollNumber(
+			@Parameter(description = "Integer",required = true) @PathVariable(name = "roll_no",required = true) int rollNo)
 	{
 		HttpStatus status = null;
-		StudentDTO dto = new StudentDTO();
+		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
-		List<Student> list = service.findById(rollNo);
-		
+		StudentDTO response = null;
+		LOGGER.log(Level.INFO, "############# findStudentDetailsByRollNumber() :: roll_no :: " + rollNo);
 		try {
-			if (list.size() == 0) {
-				status = HttpStatus.NOT_FOUND;
-				message = "No Student Present in DB with the Roll Number => "+rollNo;
-				dto.setMessage(message);
-			}else {
-				message = "Student Record Found with Roll Number => "+rollNo;
+			response = studentService.findStudentDetailsByRollNumber(rollNo);
+			if(response != null)
+			{
 				status = HttpStatus.OK;
-				dto.setMessage(message);
-				dto.setData(list);
+				message = ProjectConstant.DATA_FOUND;
 			}
-			return new ResponseEntity<StudentDTO>(dto,status);
+			else
+			{
+				status = HttpStatus.NOT_FOUND;
+				message = ProjectConstant.DATA_NOT_FOUND;
+			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			String errorMessage = e.toString();
-			dto.setMessage(errorMessage);
-			status = HttpStatus.BAD_REQUEST;
-			return new ResponseEntity<StudentDTO>(dto,status);
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
+		
+		return new ResponseEntity<>(new ApiEntity<StudentDTO>(message, response), httpHeaders, status);
 	}
 	
 	@Operation(summary = "updateStudentDetailsByRollNo")
-	@RequestMapping(path = "/student/{roll_no}",consumes = "application/json",produces = "application/json",method = RequestMethod.PUT)
-	public ResponseEntity<StudentResponse> updateById(@PathVariable(name = "roll_no") int rollNo,@RequestBody StudentRequest request)
+	@PutMapping(path = "/student/{roll_no}")
+	public ResponseEntity<ApiResponseObject> updateStudentDetailsByRollNumber(
+		@Parameter(description = "Integer",required = true) @PathVariable(name = "roll_no" , required = true) int rollNo,
+		@Parameter(name = "in_StudentRequest",description = "StudentRequest",required = true) @RequestBody(required = true) StudentRequest request)
 	{
-		HttpStatus status = HttpStatus.OK;
-		StudentResponse response = service.updateStudentById(rollNo,request);
-		return new ResponseEntity<StudentResponse>(response,status);
+		HttpStatus status = null;
+		HttpHeaders httpHeaders = new HttpHeaders();
+		String message = null;
+		String response = null;
+		LOGGER.log(Level.INFO, "############# updateStudentDetailsByRollNumber() :: roll_no :: " + rollNo+" :: StudentRequest :: "+request);
+		try {
+			response = studentService.updateStudentDetailsByRollNumber(rollNo, request);
+			if(response.equals(ProjectConstant.SUCCESS_MSG))
+			{
+				status = HttpStatus.OK;
+				message = ProjectConstant.UPDATED_MSG;
+			}
+			else if(response.equals(ProjectConstant.NOT_PRESENT))
+			{
+				status = HttpStatus.NOT_FOUND;
+				message = ProjectConstant.RESOURCE_NOT_PRESENT;
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		
+		return new ResponseEntity<>(new ApiEntity<String>(message, response), httpHeaders, status);
+		
 	}
 	
 	@Operation(summary = "deleteStudentDetailsByRollNo")
-	@RequestMapping(path = "/student/{roll_no}",consumes = "text/plain",produces = "application/json",method = RequestMethod.DELETE)
-	public ResponseEntity<StudentResponse> deleteById(@PathVariable(name = "roll_no") int rollNo)
+	@DeleteMapping(path = "/student/{roll_no}")
+	public ResponseEntity<ApiResponseObject> deleteStudentByRollNumber(
+		 @Parameter(description = "Integer",required = true) @PathVariable(name = "roll_no",required = true) int rollNo)
 	{
-		StudentResponse response = service.deleteStudentById(rollNo);
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		return new ResponseEntity<StudentResponse>(response,status);
+		HttpStatus status = null;
+		HttpHeaders httpHeaders = new HttpHeaders();
+		String message = null;
+		String response = null;
+		LOGGER.log(Level.INFO, "############# deleteStudentByRollNumber() :: roll_no :: " + rollNo);
+		try {
+			response = studentService.deleteStudentByRollNumber(rollNo);
+			if(response.equals(ProjectConstant.SUCCESS_MSG))
+			{
+				status = HttpStatus.OK;
+				message = ProjectConstant.DELETED_MSG;
+			}
+			else if(response.equals(ProjectConstant.NOT_PRESENT));
+			{
+				status = HttpStatus.NOT_FOUND;
+				message = ProjectConstant.RESOURCE_NOT_PRESENT;
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<>(new ApiEntity<String>(message, response), httpHeaders, status);
+	}
+	
+	@Operation(summary = "deleteAllStudentDetailsByRollNo")
+	@DeleteMapping(path = "/student")
+	public ResponseEntity<ApiResponseObject> deleteAllStudent()
+	{
+		HttpStatus status = null;
+		HttpHeaders httpHeaders = new HttpHeaders();
+		String message = null;
+		String response = null;
+		try {
+			response = studentService.deleteAllStudent();
+			if(response.equals(ProjectConstant.SUCCESS_MSG))
+			{
+				status = HttpStatus.OK;
+				message = ProjectConstant.DELETED_MSG;
+			}
+			else
+			{
+				status = HttpStatus.NOT_FOUND;
+				message = ProjectConstant.RESOURCE_NOT_PRESENT;
+				response = ProjectConstant.NOT_PRESENT;
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<>(new ApiEntity<String>(message, response), httpHeaders, status);
 	}
 }

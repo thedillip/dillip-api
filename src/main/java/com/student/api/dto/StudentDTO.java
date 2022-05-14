@@ -1,45 +1,41 @@
 package com.student.api.dto;
 
-
-import java.time.LocalDateTime;
-import java.util.List;
-import com.student.api.entity.Student;
-
 public class StudentDTO {
-	private LocalDateTime timestamp = LocalDateTime.now();
-	private String message;
-	private List<Student> data;
-	public StudentDTO() {
-		super();
-	}
-	public StudentDTO(LocalDateTime timestamp, String message, List<Student> data) {
-		super();
-		this.timestamp = timestamp;
-		this.message = message;
-		this.data = data;
-	}
-	public LocalDateTime getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(LocalDateTime timestamp) {
-		this.timestamp = timestamp;
-	}
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	public List<Student> getData() {
-		return data;
-	}
-	public void setData(List<Student> data) {
-		this.data = data;
-	}
-	@Override
-	public String toString() {
-		return "StudentDTO [timestamp=" + timestamp + ", message=" + message + ", data=" + data + "]";
-	}
 	
+	private int rollNumber;
+	private String studentName;
+	private long mobileNumber;
+	private int age;
+	private String gender;
 	
+	public int getRollNumber() {
+		return rollNumber;
+	}
+	public void setRollNumber(int rollNumber) {
+		this.rollNumber = rollNumber;
+	}
+	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public long getMobileNumber() {
+		return mobileNumber;
+	}
+	public void setMobileNumber(long mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 }
