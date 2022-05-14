@@ -8,12 +8,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -24,9 +24,8 @@ import com.student.api.repository.ReportEntityRepository;
 import com.student.api.request.WeightSlipRequest;
 import com.student.api.response.MediaFile;
 import com.student.api.response.ReportResponse;
+import com.student.api.util.ProjectConstant;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -36,7 +35,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
-public class ReportServiceImpl {
+public class ReportServiceImpl implements ReportService {
 	
 	
 	@Autowired
@@ -47,15 +46,17 @@ public class ReportServiceImpl {
 
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	public Map<String, String> startReportApi()
+	@Override
+	public String startReportApi()
 	{
 		LOGGER.log(Level.INFO, "##############################Report API has been started###################################");
-		Map<String, String> hello = new HashMap<>();
-		hello.put("message", "API has been started. API is hosted on Microsoft Azure");
-		return hello;
+		String message = ProjectConstant.SUCCESS_MSG;
+		return message;
 	}
-
-	public MediaFile exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
+	
+	@Override
+	public MediaFile exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException 
+	{
 		LOGGER.log(Level.INFO, "Hitting exportReport() method in Service Layer");
 		
 		String fileName = "Weight Slip_"+weightSlipRequest.getVehicleNumber().toUpperCase()+"_"+formattedDateTime(LocalDateTime.now())+".pdf";
@@ -133,10 +134,11 @@ public class ReportServiceImpl {
 			entity.setCreatedDate(LocalDateTime.now());
 			repository.save(entity);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.INFO, "#############Exception Occured############",e);
 		}
 	}
 	
+	@Override
 	public List<ReportResponse> findAll()
 	{
 		List<ReportEntity> response = repository.findAll();
@@ -162,6 +164,7 @@ public class ReportServiceImpl {
 		return reRespopnse;
 	}
 
+	@Override
 	public List<ReportResponse> findByVehicleNumber(String vehicleNumber) {
 		List<ReportEntity> response = repository.findByVehicleNumber(vehicleNumber);
 		List<ReportResponse> reRespopnse = new ArrayList<>();
@@ -185,10 +188,15 @@ public class ReportServiceImpl {
 		}
 		return reRespopnse;
 	}
-	public void deleteWeightSlip() {
+	
+	@Override
+	public String deleteAllWeightSlip() {
 		repository.deleteAll();
+		String message = ProjectConstant.SUCCESS_MSG;
+		return message;
 	}
 	
+	@Override
 	public String sendEmail(ContactDetails contact) {
 
 		String emailBody = "Dear, " + contact.getName() + "\n\n"
@@ -217,6 +225,6 @@ public class ReportServiceImpl {
 		contactDetails.setMessage(contact.getMessage());
 		contactDetails.setSubject(contact.getSubject());
 
-		return "SUCCESS";
+		return ProjectConstant.SUCCESS_MSG;
 	}
 }

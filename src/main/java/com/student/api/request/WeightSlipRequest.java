@@ -9,8 +9,6 @@ public class WeightSlipRequest {
 	private String tareWeight;
 	private LocalDateTime grossWeightDate;
 	private LocalDateTime tareWeightDate;
-	private String grossWeightTime;
-	private String tareWeightTime;
 	private String message;
 	private boolean checked;
 	
@@ -53,18 +51,6 @@ public class WeightSlipRequest {
 	}
 	public void setTareWeightDate(LocalDateTime tareWeightDate) {
 		this.tareWeightDate = tareWeightDate;
-	}
-	public String getGrossWeightTime() {
-		return grossWeightTime;
-	}
-	public void setGrossWeightTime(String grossWeightTime) {
-		this.grossWeightTime = grossWeightTime;
-	}
-	public String getTareWeightTime() {
-		return tareWeightTime;
-	}
-	public void setTareWeightTime(String tareWeightTime) {
-		this.tareWeightTime = tareWeightTime;
 	}
 	public String getMessage() {
 		return message;
