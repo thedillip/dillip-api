@@ -63,7 +63,7 @@ public class ReportServiceImpl implements ReportService {
 		LOGGER.log(Level.INFO, "#################### Hitting exportReport() method in ServiceImpl Layer ###################");
 
 		String fileName = "Weight Slip_" + weightSlipRequest.getVehicleNumber().toUpperCase() + "_"
-				+ formattedDateTime(LocalDateTime.now()) + ".pdf";
+				+ ProjectConstant.formattedDateTime(LocalDateTime.now()) + ".pdf";
 
 		if (weightSlipRequest.isChecked()) {
 			saveWeightSlipDetails(weightSlipRequest);
@@ -152,9 +152,9 @@ public class ReportServiceImpl implements ReportService {
 				ReportResponse obj = new ReportResponse();
 				obj.setAddress(report.getAddress());
 				obj.setVehicleNumber(report.getVehicleNumber());
-				obj.setGrossWeight(report.getGrossWeight());
-				obj.setTareWeight(report.getTareWeight());
-				obj.setNetWeight(report.getNetWeight());
+				obj.setGrossWeight(report.getGrossWeight()+" KG");
+				obj.setTareWeight(report.getTareWeight()+ " KG");
+				obj.setNetWeight(report.getNetWeight()+ " KG");
 				obj.setGrossWeightDate(formattedDateTime(report.getGrossWeightDate()));
 				obj.setTareWeightDate(formattedDateTime(report.getTareWeightDate()));
 				obj.setCreatedDate(formattedDateTime(report.getCreatedDate()));
@@ -162,7 +162,7 @@ public class ReportServiceImpl implements ReportService {
 				reRespopnse.add(obj);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.INFO, "#############Exception Occured############", e);
 		}
 		return reRespopnse;
 	}
