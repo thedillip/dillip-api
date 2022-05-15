@@ -1,9 +1,15 @@
 package com.dillip.api.util;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectConstant {
+
+	// constant variable
+
 	public static final String SUCCESS_MSG = "SUCCESS";
 	public static final String ERR_MSG = "ERROR";
 	public static final String RESOURCE_NOT_PRESENT = "Resource Not Present in Database";
@@ -13,4 +19,12 @@ public class ProjectConstant {
 	public static final String DATA_FOUND = "Data Found";
 	public static final String DATA_NOT_FOUND = "Data not Found";
 	public static final String NOT_PRESENT = "NOT PRESENT";
+
+	// constant method
+
+	public static final String formattedDateTime(LocalDateTime date) {
+		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm:ss a");
+		return date.format(myFormatObj).toUpperCase();
+	}
+
 }

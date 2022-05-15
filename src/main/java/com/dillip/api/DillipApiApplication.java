@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class StudentApiApplication {
+public class DillipApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StudentApiApplication.class, args);
+		SpringApplication.run(DillipApiApplication.class, args);
 	}
 
 }

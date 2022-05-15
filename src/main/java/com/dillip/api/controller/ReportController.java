@@ -82,6 +82,7 @@ public class ReportController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		MediaFile response = null;
+		LOGGER.log(Level.INFO, "########## Hitting generateReport() in Controller ########## :: WeightSlipRequest :: ",weightSlipRequest);
 		try 
 		{
 			response = reportService.exportReport(weightSlipRequest);
@@ -210,6 +211,7 @@ public class ReportController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		String response = null;
+		LOGGER.log(Level.INFO, "########## Hitting sendEmail() in Controller Layer :: ContactDetails :: ",contact);
 		try 
 		{
 			response = reportService.sendEmail(contact);
@@ -221,7 +223,7 @@ public class ReportController {
 			}
 			else
 			{
-				message = "Sorry ! Error Occured While Sending Your Message.";
+				message = "Sorry ! An Error Occured While Sending Your Message.";
 				status = HttpStatus.BAD_REQUEST;
 			}
 		} 

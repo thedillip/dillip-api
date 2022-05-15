@@ -59,7 +59,8 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public MediaFile exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
-		LOGGER.log(Level.INFO, "Hitting exportReport() method in Service Layer");
+		
+		LOGGER.log(Level.INFO, "#################### Hitting exportReport() method in ServiceImpl Layer ###################");
 
 		String fileName = "Weight Slip_" + weightSlipRequest.getVehicleNumber().toUpperCase() + "_"
 				+ formattedDateTime(LocalDateTime.now()) + ".pdf";
@@ -102,7 +103,7 @@ public class ReportServiceImpl implements ReportService {
 		Date date = new Date();
 		headers.set(HttpHeaders.CONTENT_DISPOSITION,
 				"attachment;filename=Weight Slip_" + String.valueOf(date) + ".pdf");
-		LOGGER.log(Level.INFO, "Generating Report PDF .........");
+		LOGGER.log(Level.INFO, "################# Report Generated in PDF ......... ###################");
 		return mediaFile;
 	}
 
@@ -200,6 +201,8 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public String sendEmail(ContactDetails contact) {
+		
+		LOGGER.log(Level.INFO, "#################### Hitting sendEmail() in ServiceImpl Layer ###################");
 
 		String emailBody = "Dear, " + contact.getName() + "\n\n"
 				+ "I hope you are having a productive day.\n\nI greatly appreciate the time you spent for visiting my Portfolio.\n\n"
@@ -207,7 +210,9 @@ public class ReportServiceImpl implements ReportService {
 				+ "\n\nNOTE: This is an auto generated mail. Please do not reply to this message or on this email address.\n\n"
 				+ "Thanks & Regards \nDillip K Sahoo\nContact Number :- +91 8117941692\nMailto:- lit.dillip2017@gmail.com\nWebsite:- https://dillipfolio.web.app";
 
-		String subject = "Welcome to DillipFolio! – Thanks for joining";
+		String subject = "Welcome to DillipFolio – Thanks for Visiting !!";
+		
+		LOGGER.log(Level.INFO, "########## Email Body ########## :: Email Content :: ",emailBody);
 
 		SimpleMailMessage message = new SimpleMailMessage();
 
@@ -218,7 +223,7 @@ public class ReportServiceImpl implements ReportService {
 
 		mailSender.send(message);
 
-		System.out.println("EMAIL BODY ##############" + emailBody);
+		LOGGER.log(Level.INFO, "########## Mail has been send Successfully ##########");
 
 		ContactDetails contactDetails = new ContactDetails();
 		contactDetails.setName(contact.getName());

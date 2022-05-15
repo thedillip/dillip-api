@@ -98,7 +98,6 @@ package com.dillip.api.controller;
 //				status = HttpStatus.OK;
 //			}
 //		} catch (Exception e) {
-//			// TODO: handle exception
 //			System.out.println(e);
 //			response.setData(null);
 //			message = "Data not Found";
