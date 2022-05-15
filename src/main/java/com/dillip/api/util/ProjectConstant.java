@@ -1,6 +1,8 @@
 package com.dillip.api.util;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
@@ -23,8 +25,19 @@ public class ProjectConstant {
 	// constant method
 
 	public static final String formattedDateTime(LocalDateTime date) {
+		
+		// your local date/time with no timezone information
+		LocalDateTime localNow = date;
+		// setting UTC as the timezone
+		ZonedDateTime zonedUTC = localNow.atZone(ZoneId.of("UTC"));
+		// converting to IST
+		ZonedDateTime zonedIST = zonedUTC.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+		
 		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm:ss a");
-		return date.format(myFormatObj).toUpperCase();
+		return zonedIST.format(myFormatObj).toUpperCase();
 	}
-
+	
+//	public static void main(String[] args) {
+//		System.out.println(formattedDateTime(LocalDateTime.now()));
+//	}
 }
