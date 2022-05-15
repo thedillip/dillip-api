@@ -135,7 +135,7 @@ public class ReportServiceImpl implements ReportService {
 			entity.setNetWeight(netWeight);
 			entity.setGrossWeightDate(weightSlipRequest.getGrossWeightDate());
 			entity.setTareWeightDate(weightSlipRequest.getTareWeightDate());
-			entity.setCreatedDate(LocalDateTime.now());
+			entity.setCreatedDate( ProjectConstant.convertUTCtoISTtime(LocalDateTime.now()));
 			repository.save(entity);
 		} catch (Exception e) {
 			LOGGER.log(Level.INFO, "#############Exception Occured############", e);

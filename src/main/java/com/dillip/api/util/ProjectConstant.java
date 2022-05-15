@@ -25,19 +25,20 @@ public class ProjectConstant {
 	// constant method
 
 	public static final String formattedDateTime(LocalDateTime date) {
-		
-		// your local date/time with no timezone information
-		LocalDateTime localNow = date;
-		// setting UTC as the timezone
-		ZonedDateTime zonedUTC = localNow.atZone(ZoneId.of("UTC"));
-		// converting to IST
-		ZonedDateTime zonedIST = zonedUTC.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+		LocalDateTime zonedISTtime = convertUTCtoISTtime(date);
 		
 		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm:ss a");
-		return zonedIST.format(myFormatObj).toUpperCase();
+		return zonedISTtime.format(myFormatObj).toUpperCase();
 	}
 	
-//	public static void main(String[] args) {
-//		System.out.println(formattedDateTime(LocalDateTime.now()));
-//	}
+	public static final LocalDateTime convertUTCtoISTtime(LocalDateTime date)
+	{
+		// setting UTC as the timezone
+		ZonedDateTime zonedUTCtime = date.atZone(ZoneId.of("UTC"));
+		
+		// converting to IST
+		LocalDateTime zonedISTtime = zonedUTCtime.withZoneSameInstant(ZoneId.of("Asia/Kolkata")).toLocalDateTime();
+		
+		return zonedISTtime;
+	}
 }
