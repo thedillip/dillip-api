@@ -73,6 +73,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>DillipAPI</finalName>
 	</build>
 
 </project>
