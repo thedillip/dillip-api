@@ -72,6 +72,14 @@ public class StudentServiceImpl implements StudentService {
 		{
 			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
 		}
+		retList.sort((studentObj1,studentObj2)->{
+			if(studentObj1.getRollNumber()<studentObj2.getRollNumber())
+				return -1;
+			else if(studentObj1.getRollNumber()>studentObj2.getRollNumber())
+				return +1;
+			else
+				return 0;
+		});
 		return retList;
 	}
 	
