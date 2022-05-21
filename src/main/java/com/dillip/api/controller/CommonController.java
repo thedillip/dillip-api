@@ -34,7 +34,7 @@ public class CommonController {
 	@Autowired
 	private CommonService commonService;
 	
-	@Operation(summary = "fetchRandomQuote")
+	@Operation(summary = "getRandomQuote")
 	@GetMapping(path = "/quote")
 	public ResponseEntity<ApiResponseObject> getRandomQuote()
 	{	
@@ -109,7 +109,7 @@ public class CommonController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		List<PostOfficeDetailsResponse> response = null;
-		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCode() in Controller Layer ###############");
+		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByBranchName() in Controller Layer ###############");
 		try {
 			response = commonService.getPostOfficeDetailsByBranchName(branchName);
 			if(!response.isEmpty() && response != null)
@@ -123,7 +123,7 @@ public class CommonController {
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByPinCode() in Controller Layer ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByBranchName() in Controller Layer ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -142,7 +142,7 @@ public class CommonController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		BankDetailsResponse response = null;
-		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCode() in Controller Layer ###############");
+		LOGGER.log(Level.INFO, "############# Hitting getBankDetailsByIfsc() in Controller Layer ###############");
 		try {
 			response = commonService.getBankDetailsByIfsc(ifscCode);
 			if(response != null)
@@ -156,7 +156,7 @@ public class CommonController {
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getBankDetailsByIfsc() in Controller Layer ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}

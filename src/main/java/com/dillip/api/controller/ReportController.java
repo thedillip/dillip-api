@@ -127,7 +127,7 @@ public class ReportController {
 			else
 			{
 				message = ProjectConstant.DATA_NOT_FOUND;
-				status = HttpStatus.BAD_REQUEST;
+				status = HttpStatus.NOT_FOUND;
 			}
 		} 
 		catch (Exception e) 
@@ -159,7 +159,7 @@ public class ReportController {
 			else
 			{
 				message = ProjectConstant.DATA_NOT_FOUND;
-				status = HttpStatus.BAD_REQUEST;
+				status = HttpStatus.NOT_FOUND;
 			}
 		} 
 		catch (Exception e) 

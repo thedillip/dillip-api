@@ -46,3 +46,11 @@ spring:
           auth: true
           starttls:
             enable: true
+randomquote:
+  url: https://api.quotable.io/random
+  
+pincode:
+  url: https://api.postalpincode.in/
+  
+bankdetails:
+  url: https://ifsc.razorpay.com/

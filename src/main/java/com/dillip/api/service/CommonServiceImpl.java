@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,6 @@ import com.dillip.api.dto.PinCodeDetailsDTO;
 import com.dillip.api.dto.RandomQuoteDTO;
 import com.dillip.api.response.BankDetailsResponse;
 import com.dillip.api.response.PostOfficeDetailsResponse;
-import com.dillip.api.util.ProjectConstant;
 import com.google.gson.Gson;
 
 @Service
@@ -34,11 +34,19 @@ public class CommonServiceImpl implements CommonService {
 	
 	@Autowired
 	private Gson gson;
+	
+	@Value("${randomquote.url}")
+	private String randomQuoteUrl;
+	@Value("${pincode.url}")
+	private String pinCodeUrl;
+	@Value("${bankdetails.url}")
+	private String bankDetailsUrl;
+	
 
 	@Override
 	public RandomQuoteDTO getRandomQuote() {
 		RandomQuoteDTO response = null;
-		String apiUrl = ProjectConstant.randomQuoteUrl;
+		String apiUrl = randomQuoteUrl;
 		String fetchDataFromOtherApi = fetchDataFromOtherApi(apiUrl);
 		try {
 			LOGGER.log(Level.INFO, "############# Hitting getRandomQuote() ServiceImpl Layer ##########");
@@ -60,14 +68,14 @@ public class CommonServiceImpl implements CommonService {
 	
 	@Override
 	public List<PostOfficeDetailsResponse> getPostOfficeDetailsByPinCode(String pinCode) {
-		String apiUrl = ProjectConstant.pinCodeDetailsUrl+"pincode/"+pinCode;
+		String apiUrl = pinCodeUrl+"pincode/"+pinCode;
 		List<PostOfficeDetailsResponse> reList = getPostOfficeDetailsByPinCodeOrBranchName(apiUrl);
 		return reList;
 	}
 	
 	@Override
 	public List<PostOfficeDetailsResponse> getPostOfficeDetailsByBranchName(String branchName) {
-		String apiUrl = ProjectConstant.pinCodeDetailsUrl+"postoffice/"+branchName;
+		String apiUrl = pinCodeUrl+"postoffice/"+branchName;
 		List<PostOfficeDetailsResponse> reList = getPostOfficeDetailsByPinCodeOrBranchName(apiUrl);
 		return reList;
 	}
@@ -75,7 +83,7 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public BankDetailsResponse getBankDetailsByIfsc(String ifscCode) {
 		BankDetailsResponse response = null;
-		String apiUrl = ProjectConstant.ifscUrl+ifscCode;
+		String apiUrl = bankDetailsUrl+ifscCode;
 		String fetchDataFromOtherApi = fetchDataFromOtherApi(apiUrl);
 		try {
 			if(fetchDataFromOtherApi != null)
@@ -96,6 +104,7 @@ public class CommonServiceImpl implements CommonService {
 					response.setBankName(fetchBankDetailsByIfsc.getBANK());
 					response.setBankCode(fetchBankDetailsByIfsc.getBANKCODE());
 					response.setIfscCode(fetchBankDetailsByIfsc.getIFSC());
+					LOGGER.log(Level.INFO, "############# Hitting getBankDetailsByIfsc() ServiceImpl Layer ##########");
 				}
 			}
 		} catch (Exception e) {

@@ -21,11 +21,6 @@ public class ProjectConstant {
 	public static final String DATA_FOUND = "Data Found";
 	public static final String DATA_NOT_FOUND = "Data not Found";
 	public static final String NOT_PRESENT = "NOT PRESENT";
-	
-	
-	public static final String randomQuoteUrl = "https://api.quotable.io/random";
-	public static final String pinCodeDetailsUrl = "https://api.postalpincode.in/";
-	public static final String ifscUrl = "https://ifsc.razorpay.com/";
 
 	// constant method
 
