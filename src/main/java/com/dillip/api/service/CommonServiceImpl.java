@@ -1,10 +1,12 @@
 package com.dillip.api.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -16,51 +18,85 @@ import org.springframework.web.client.RestTemplate;
 import com.dillip.api.dto.BankDetailsDTO;
 import com.dillip.api.dto.PinCodeDTO;
 import com.dillip.api.dto.PinCodeDetailsDTO;
-import com.dillip.api.dto.PostOfficeDetailsDTO;
 import com.dillip.api.dto.RandomQuoteDTO;
 import com.dillip.api.response.BankDetailsResponse;
-import com.dillip.api.response.ConsumeUniversityBody;
+import com.dillip.api.response.PostOfficeDetailsResponse;
 import com.dillip.api.util.ProjectConstant;
+import com.google.gson.Gson;
 
 @Service
 public class CommonServiceImpl implements CommonService {
 	
 	private final static Logger LOGGER = Logger.getLogger("Dillip Logger");
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	@Autowired
+	private Gson gson;
 
 	@Override
 	public RandomQuoteDTO getRandomQuote() {
-//		RandomQuoteDTO fetchRandomQuote = fetchRandomQuote();
-//		return fetchRandomQuote;
-		return null;
+		RandomQuoteDTO response = null;
+		String apiUrl = ProjectConstant.randomQuoteUrl;
+		String fetchDataFromOtherApi = fetchDataFromOtherApi(apiUrl);
+		try {
+			LOGGER.log(Level.INFO, "############# Hitting getRandomQuote() ServiceImpl Layer ##########");
+			if(fetchDataFromOtherApi != null)
+			{
+				response = gson.fromJson(fetchDataFromOtherApi, RandomQuoteDTO.class);
+			}
+			else
+			{
+				response = new RandomQuoteDTO();
+				response.setAuthor("Dillip K Sahoo");
+				response.setContent("The greatest battle are fought with the closest people.");
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured in getRandomQuote() ServiceImpl Layer ##########", e);
+		}
+		return response;
 	}
 	
 	@Override
-	public List<PinCodeDTO> getPinCodeDetails(String pinCode) {
-//		List<PinCodeDTO> fetchPinCodeDetails = fetchPinCodeDetails(pinCode);
-//		return fetchPinCodeDetails;
-		return null;
+	public List<PostOfficeDetailsResponse> getPostOfficeDetailsByPinCode(String pinCode) {
+		String apiUrl = ProjectConstant.pinCodeDetailsUrl+"pincode/"+pinCode;
+		List<PostOfficeDetailsResponse> reList = getPostOfficeDetailsByPinCodeOrBranchName(apiUrl);
+		return reList;
+	}
+	
+	@Override
+	public List<PostOfficeDetailsResponse> getPostOfficeDetailsByBranchName(String branchName) {
+		String apiUrl = ProjectConstant.pinCodeDetailsUrl+"postoffice/"+branchName;
+		List<PostOfficeDetailsResponse> reList = getPostOfficeDetailsByPinCodeOrBranchName(apiUrl);
+		return reList;
 	}
 	
 	@Override
 	public BankDetailsResponse getBankDetailsByIfsc(String ifscCode) {
 		BankDetailsResponse response = null;
+		String apiUrl = ProjectConstant.ifscUrl+ifscCode;
+		String fetchDataFromOtherApi = fetchDataFromOtherApi(apiUrl);
 		try {
-			BankDetailsDTO fetchBankDetailsByIfsc = fetchBankDetailsByIfsc(ifscCode);
-			if(fetchBankDetailsByIfsc != null)
+			if(fetchDataFromOtherApi != null)
 			{
-				response = new BankDetailsResponse();
-				response.setMicrCode(fetchBankDetailsByIfsc.getMICR());
-				response.setBranchName(fetchBankDetailsByIfsc.getBRANCH());
-				response.setAddress(fetchBankDetailsByIfsc.getADDRESS());
-				response.setState(fetchBankDetailsByIfsc.getSTATE());
-				response.setContact(fetchBankDetailsByIfsc.getCONTACT());
-				response.setCityName(fetchBankDetailsByIfsc.getCITY());
-				response.setCenter(fetchBankDetailsByIfsc.getCENTRE());
-				response.setDistrict(fetchBankDetailsByIfsc.getDISTRICT());
-				response.setSwift(fetchBankDetailsByIfsc.getSWIFT());
-				response.setBankName(fetchBankDetailsByIfsc.getBANK());
-				response.setBankCode(fetchBankDetailsByIfsc.getBANKCODE());
-				response.setIfscCode(fetchBankDetailsByIfsc.getIFSC());
+				BankDetailsDTO fetchBankDetailsByIfsc = gson.fromJson(fetchDataFromOtherApi, BankDetailsDTO.class);
+				if(fetchBankDetailsByIfsc != null)
+				{
+					response = new BankDetailsResponse();
+					response.setMicrCode(fetchBankDetailsByIfsc.getMICR());
+					response.setBranchName(fetchBankDetailsByIfsc.getBRANCH());
+					response.setAddress(fetchBankDetailsByIfsc.getADDRESS());
+					response.setState(fetchBankDetailsByIfsc.getSTATE());
+					response.setContact(fetchBankDetailsByIfsc.getCONTACT());
+					response.setCityName(fetchBankDetailsByIfsc.getCITY());
+					response.setCenter(fetchBankDetailsByIfsc.getCENTRE());
+					response.setDistrict(fetchBankDetailsByIfsc.getDISTRICT());
+					response.setSwift(fetchBankDetailsByIfsc.getSWIFT());
+					response.setBankName(fetchBankDetailsByIfsc.getBANK());
+					response.setBankCode(fetchBankDetailsByIfsc.getBANKCODE());
+					response.setIfscCode(fetchBankDetailsByIfsc.getIFSC());
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.log(Level.INFO, "############# Exception Occured in getBankDetailsByIfsc() ServiceImpl Layer ##########", e);
@@ -68,75 +104,65 @@ public class CommonServiceImpl implements CommonService {
 		return response;
 	}
 	
-//	public RandomQuoteDTO fetchRandomQuote()
-//	{
-//		RandomQuoteDTO body = null;
-//		String apiUrl = ProjectConstant.randomQuoteUrl;
-//		RestTemplate restTemplate = new RestTemplate();
-//		MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
-//		headers.add("Content-Type", "application/json");
-//		headers.add("Accept", "application/json");
-//		
-//		try {
-//			ResponseEntity<RandomQuoteDTO> response = 
-//					restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers),RandomQuoteDTO.class);
-//			body = response.getBody();
-//		} catch (Exception e) {
-//			LOGGER.log(Level.INFO, "############# Exception Occured in fetchRandomQuote() ServiceImpl Layer ##########", e);
-//		}
-//		return body;
-//	}
-	
-//	public List<PinCodeDTO> fetchPinCodeDetails(String urlParam)
-//	{
-//		List<PinCodeDTO> reResponse = null;
-//		String apiUrl = ProjectConstant.pinCodeDetailsUrl+urlParam;
-//		RestTemplate restTemplate = new RestTemplate();
-//		MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
-//		headers.add("Content-Type", "application/json");
-//		headers.add("Accept", "application/json");
-		
-//		try {
-//			PinCodeDetailsDTO[] response = restTemplate.getForObject(apiUrl, PinCodeDetailsDTO[].class);
-//			List<PinCodeDetailsDTO> asList = Arrays.asList(response);
-//			for(PinCodeDetailsDTO tempObj : asList)
-//			{
-//				List<PinCodeDTO> postOffice = tempObj.getPostOffice();
-//				reResponse = postOffice;
-//			}
-			
-//			ResponseEntity<PostOfficeDetailsDTO> response = 
-//					restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers),PostOfficeDetailsDTO.class);
-//			PostOfficeDetailsDTO body = response.getBody();
-//			List<PinCodeDetailsDTO> data = body.getData();
-//			for(PinCodeDetailsDTO tempObj : data)
-//			{
-//				reResponse = tempObj.getPostOffice();
-//			}
-//		} catch (Exception e) {
-//			LOGGER.log(Level.INFO, "############# Exception Occured in fetchPinCodeDetails() ServiceImpl Layer ##########", e);
-//		}
-//		return reResponse;
-//	}
-	
-	public BankDetailsDTO fetchBankDetailsByIfsc(String urlParam)
-	{
-		BankDetailsDTO response = null;
-		String apiUrl = ProjectConstant.ifscUrl+urlParam;
-		RestTemplate restTemplate = new RestTemplate();
-		MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
-//		headers.add("Content-Type", "application/json");
-//		headers.add("Accept", "application/json");
-		
+	public List<PostOfficeDetailsResponse> getPostOfficeDetailsByPinCodeOrBranchName(String apiUrl) {
+		PinCodeDetailsDTO[] response = null;
+		List<PinCodeDTO> reResponse = null;
+		List<PostOfficeDetailsResponse> reList = new ArrayList<>();
+		String fetchDataFromOtherApi = fetchDataFromOtherApi(apiUrl);
 		try {
-//			ResponseEntity<BankDetailsDTO> response = 
-//					restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers),BankDetailsDTO.class);
-//			body = response.getBody();
-			
-			response = restTemplate.getForObject(apiUrl, BankDetailsDTO.class);
+			LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCodeOrBranchName() ServiceImpl Layer ##########");
+			if(fetchDataFromOtherApi != null)
+			{
+				response = gson.fromJson(fetchDataFromOtherApi, PinCodeDetailsDTO[].class);
+				List<PinCodeDetailsDTO> asList = Arrays.asList(response);
+				for(PinCodeDetailsDTO tempObj : asList)
+				{
+					reResponse = tempObj.getPostOffice();
+				}
+			}
+			if(reResponse != null)
+			{
+				for(PinCodeDTO tempPinCodeDto : reResponse)
+				{
+					PostOfficeDetailsResponse tempPostOfficeDetailsResponse = new PostOfficeDetailsResponse();
+					tempPostOfficeDetailsResponse.setPostOfficeName(tempPinCodeDto.getName());
+					tempPostOfficeDetailsResponse.setDescription(tempPinCodeDto.getDescription());
+					tempPostOfficeDetailsResponse.setBranchType(tempPinCodeDto.getBranchType());
+					tempPostOfficeDetailsResponse.setDeliveryStatus(tempPinCodeDto.getDeliveryStatus());
+					tempPostOfficeDetailsResponse.setCircleName(tempPinCodeDto.getCircle());
+					tempPostOfficeDetailsResponse.setDistrictName(tempPinCodeDto.getDistrict());
+					tempPostOfficeDetailsResponse.setDivisionName(tempPinCodeDto.getDivision());
+					tempPostOfficeDetailsResponse.setRegionName(tempPinCodeDto.getRegion());
+					tempPostOfficeDetailsResponse.setBlockName(tempPinCodeDto.getBlock());
+					tempPostOfficeDetailsResponse.setState(tempPinCodeDto.getState());
+					tempPostOfficeDetailsResponse.setCountry(tempPinCodeDto.getCountry());
+					tempPostOfficeDetailsResponse.setPincode(tempPinCodeDto.getPincode());
+					reList.add(tempPostOfficeDetailsResponse);
+				}
+			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured in fetchBankDetailsByIfsc() ServiceImpl Layer ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByPinCodeOrBranchName() ServiceImpl Layer ##########", e);
 		}
-		return response;
+		return reList;
+	}
+	
+	
+	public String fetchDataFromOtherApi(String apiUrl) {
+		String body = null;
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+		headers.add("Content-Type", "application/json");
+		headers.add("Accept", "application/json");
+
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers),
+					String.class);
+			body = response.getBody();
+			LOGGER.log(Level.INFO,
+					"############# Hitting fetchDataFromOtherApi() ServiceImpl Layer ##########");
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO,
+					"############# Exception Occured in fetchDataFromOtherApi() ServiceImpl Layer ##########", e);
+		}
+		return body;
 	}
 }

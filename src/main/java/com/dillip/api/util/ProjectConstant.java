@@ -24,7 +24,7 @@ public class ProjectConstant {
 	
 	
 	public static final String randomQuoteUrl = "https://api.quotable.io/random";
-	public static final String pinCodeDetailsUrl = "https://api.postalpincode.in/pincode/";
+	public static final String pinCodeDetailsUrl = "https://api.postalpincode.in/";
 	public static final String ifscUrl = "https://ifsc.razorpay.com/";
 
 	// constant method

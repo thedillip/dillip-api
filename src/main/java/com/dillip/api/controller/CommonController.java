@@ -11,13 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dillip.api.dto.PinCodeDTO;
 import com.dillip.api.dto.RandomQuoteDTO;
 import com.dillip.api.response.ApiEntity;
 import com.dillip.api.response.ApiResponseObject;
 import com.dillip.api.response.BankDetailsResponse;
+import com.dillip.api.response.PostOfficeDetailsResponse;
 import com.dillip.api.service.CommonService;
 import com.dillip.api.util.ProjectConstant;
 
@@ -47,12 +48,12 @@ public class CommonController {
 			response = commonService.getRandomQuote();
 			if(response != null)
 			{
-				message = ProjectConstant.DATA_FOUND;
+				message = "Quote Found";
 				status = HttpStatus.OK;
 			}
 			else
 			{
-				message = ProjectConstant.DATA_NOT_FOUND;
+				message = "Quote Not Found";
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
@@ -74,10 +75,10 @@ public class CommonController {
 		HttpStatus status = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
-		List<PinCodeDTO> response = null;
+		List<PostOfficeDetailsResponse> response = null;
 		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCode() in Controller Layer ###############");
 		try {
-			response = commonService.getPinCodeDetails(pinCode);
+			response = commonService.getPostOfficeDetailsByPinCode(pinCode);
 			if(!response.isEmpty() && response != null)
 			{
 				message = ProjectConstant.DATA_FOUND;
@@ -89,15 +90,48 @@ public class CommonController {
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByPinCode() in Controller Layer ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		
-		return new ResponseEntity<>(new ApiEntity<List<PinCodeDTO>>(message, response), httpHeaders, status);
+		return new ResponseEntity<>(new ApiEntity<List<PostOfficeDetailsResponse>>(message, response), httpHeaders, status);
 	}
 	
-	@Operation(summary = "getPostOfficeDetailsByPinCode")
+	@Operation(summary = "getPostOfficeDetailsByPostOfficeBranchName")
+	@GetMapping(path = "/postoffice-details")
+	public ResponseEntity<ApiResponseObject> getPostOfficeDetailsByBranchName(
+			 @Parameter(description = "String",required = true) @RequestParam (name = "branch_name",required = true) String branchName
+			)
+	{	
+		
+		HttpStatus status = null;
+		HttpHeaders httpHeaders = new HttpHeaders();
+		String message = null;
+		List<PostOfficeDetailsResponse> response = null;
+		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCode() in Controller Layer ###############");
+		try {
+			response = commonService.getPostOfficeDetailsByBranchName(branchName);
+			if(!response.isEmpty() && response != null)
+			{
+				message = ProjectConstant.DATA_FOUND;
+				status = HttpStatus.OK;
+			}
+			else
+			{
+				message = ProjectConstant.DATA_NOT_FOUND;
+				status = HttpStatus.NOT_FOUND;
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByPinCode() in Controller Layer ##########", e);
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		
+		return new ResponseEntity<>(new ApiEntity<List<PostOfficeDetailsResponse>>(message, response), httpHeaders, status);
+	}
+	
+	@Operation(summary = "getBankDetailsByIfscCode")
 	@GetMapping(path = "/bank-details/{ifsc_code}")
 	public ResponseEntity<ApiResponseObject> getBankDetailsByIfsc(
 			 @Parameter(description = "String",required = true) @PathVariable(name = "ifsc_code",required = true) String ifscCode
