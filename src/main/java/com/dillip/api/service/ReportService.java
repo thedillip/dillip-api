@@ -16,7 +16,7 @@ public interface ReportService {
 	
 	MediaFile exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException;
 	
-	List<ReportResponse> findAll();
+	List<ReportResponse> findAllWeightSlipDetails();
 	
 	List<ReportResponse> findByVehicleNumber(String vehicleNumber);
 	

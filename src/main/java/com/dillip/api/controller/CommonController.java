@@ -57,7 +57,7 @@ public class CommonController {
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getRandomQuote() in Controller Layer ##########"+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -76,7 +76,7 @@ public class CommonController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		List<PostOfficeDetailsResponse> response = null;
-		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCode() in Controller Layer ###############");
+		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCode() in Controller Layer :: PinCode :: "+pinCode);
 		try {
 			response = commonService.getPostOfficeDetailsByPinCode(pinCode);
 			if(!response.isEmpty() && response != null)
@@ -90,7 +90,7 @@ public class CommonController {
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByPinCode() in Controller Layer ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByPinCode() in Controller Layer ##########"+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -109,7 +109,7 @@ public class CommonController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		List<PostOfficeDetailsResponse> response = null;
-		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByBranchName() in Controller Layer ###############");
+		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByBranchName() in Controller Layer :: PostOfficeBranchName :: "+branchName);
 		try {
 			response = commonService.getPostOfficeDetailsByBranchName(branchName);
 			if(!response.isEmpty() && response != null)
@@ -123,7 +123,7 @@ public class CommonController {
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByBranchName() in Controller Layer ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByBranchName() in Controller Layer ##########"+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -142,7 +142,7 @@ public class CommonController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		BankDetailsResponse response = null;
-		LOGGER.log(Level.INFO, "############# Hitting getBankDetailsByIfsc() in Controller Layer ###############");
+		LOGGER.log(Level.INFO, "############# Hitting getBankDetailsByIfsc() in Controller Layer :: IFSC Code :: "+ifscCode);
 		try {
 			response = commonService.getBankDetailsByIfsc(ifscCode);
 			if(response != null)
@@ -156,7 +156,7 @@ public class CommonController {
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured in getBankDetailsByIfsc() in Controller Layer ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getBankDetailsByIfsc() in Controller Layer ##########"+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}

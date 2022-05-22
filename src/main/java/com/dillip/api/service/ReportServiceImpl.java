@@ -13,12 +13,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.dillip.api.dto.UniversityDetailsDTO;
 import com.dillip.api.entity.ContactDetails;
@@ -29,6 +29,7 @@ import com.dillip.api.response.ConsumeUniversityBody;
 import com.dillip.api.response.MediaFile;
 import com.dillip.api.response.ReportResponse;
 import com.dillip.api.util.ProjectConstant;
+import com.google.gson.Gson;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -46,13 +47,22 @@ public class ReportServiceImpl implements ReportService {
 
 	@Autowired
 	private JavaMailSender mailSender;
+	
+	@Autowired
+	private CommonServiceImpl commonServiceImpl;
+	
+	@Autowired
+	private Gson gson;
 
 	private final static Logger LOGGER = Logger.getLogger("Dillip Logger");
+	
+	@Value("${universitydetails.url}")
+	private String universityDetailsUrl;
 
 	@Override
 	public String startReportApi() {
 		LOGGER.log(Level.INFO,
-				"##############################Report API has been started###################################");
+				"########## API has been Started :: Status :: UP :: SUCCESS ##########");
 		String message = ProjectConstant.SUCCESS_MSG;
 		return message;
 	}
@@ -60,7 +70,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public MediaFile exportReport(WeightSlipRequest weightSlipRequest) throws JRException, IOException {
 		
-		LOGGER.log(Level.INFO, "#################### Hitting exportReport() method in ServiceImpl Layer ###################");
+		LOGGER.log(Level.INFO, "########## Hitting exportReport() method in ServiceImpl Layer ##########");
 
 		String fileName = "Weight Slip_" + weightSlipRequest.getVehicleNumber().toUpperCase() + "_"
 				+ ProjectConstant.formattedDateTime(LocalDateTime.now()) + ".pdf";
@@ -68,7 +78,7 @@ public class ReportServiceImpl implements ReportService {
 		if (weightSlipRequest.isChecked()) {
 			saveWeightSlipDetails(weightSlipRequest);
 			LOGGER.log(Level.INFO,
-					"############################# Weight Slip Details Saved Successfully in the PostgresSQL Database #######################");
+					"########## Weight Slip Details Saved Successfully in the PostgresSQL Database ##########");
 		}
 
 		List<WeightSlipRequest> list = new ArrayList<>();
@@ -103,7 +113,7 @@ public class ReportServiceImpl implements ReportService {
 		Date date = new Date();
 		headers.set(HttpHeaders.CONTENT_DISPOSITION,
 				"attachment;filename=Weight Slip_" + String.valueOf(date) + ".pdf");
-		LOGGER.log(Level.INFO, "################# Report Generated in PDF ......... ###################");
+		LOGGER.log(Level.INFO, "########## Report Generated in PDF ......... ##########");
 		return mediaFile;
 	}
 
@@ -126,6 +136,8 @@ public class ReportServiceImpl implements ReportService {
 		ReportEntity entity = new ReportEntity();
 		String netWeight = String.valueOf(Integer.parseInt(weightSlipRequest.getGrossWeight())
 				- Integer.parseInt(weightSlipRequest.getTareWeight()));
+		
+		LOGGER.log(Level.INFO, "########## Entered into saveWeightSlipDetails() :: WeightSlipRequest :: "+weightSlipRequest);
 
 		try {
 			entity.setAddress(weightSlipRequest.getAddress().toUpperCase());
@@ -138,16 +150,17 @@ public class ReportServiceImpl implements ReportService {
 			entity.setCreatedDate( ProjectConstant.convertUTCtoISTtime(LocalDateTime.now()));
 			repository.save(entity);
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "#############Exception Occured############", e);
+			LOGGER.log(Level.INFO, "########## Exception Occured While Saving the Weight Slip Details in saveWeightSlipDetails() in ServiceImpl Layer ##########"+e);
 		}
 	}
 
 	@Override
-	public List<ReportResponse> findAll() {
+	public List<ReportResponse> findAllWeightSlipDetails() {
 		List<ReportEntity> response = repository.findAll();
 		List<ReportResponse> reRespopnse = new ArrayList<>();
 
 		try {
+			LOGGER.log(Level.INFO, "########## Hitting findAllWeightSlipDetails() for getting all WeightSlip Details in ServiceImpl Layer ##########");
 			for (ReportEntity report : response) {
 				ReportResponse obj = new ReportResponse();
 				obj.setAddress(report.getAddress());
@@ -162,7 +175,7 @@ public class ReportServiceImpl implements ReportService {
 				reRespopnse.add(obj);
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "#############Exception Occured############", e);
+			LOGGER.log(Level.INFO, "########## Exception Occured while fetching the Weight Slip Details in findAllWeightSlipDetails() in ServiceImpl Layer ##########"+e);
 		}
 		return reRespopnse;
 	}
@@ -173,6 +186,7 @@ public class ReportServiceImpl implements ReportService {
 		List<ReportResponse> reRespopnse = new ArrayList<>();
 
 		try {
+			LOGGER.log(Level.INFO, "########## Entered in findByVehicleNumber() in ServiceImpl Layer ##########");
 			for (ReportEntity report : response) {
 				ReportResponse obj = new ReportResponse();
 				obj.setAddress(report.getAddress());
@@ -187,7 +201,7 @@ public class ReportServiceImpl implements ReportService {
 				reRespopnse.add(obj);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.INFO, "########## Exception Occured while fetching the Weight Slip Details in findByVehicleNumber() in ServiceImpl Layer ########## "+e);
 		}
 		return reRespopnse;
 	}
@@ -195,6 +209,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public String deleteAllWeightSlip() {
 		repository.deleteAll();
+		LOGGER.log(Level.INFO, "########## Entered into deleteAllWeightSlip() in ServiceImpl Layer ##########");
 		String message = ProjectConstant.SUCCESS_MSG;
 		return message;
 	}
@@ -202,7 +217,7 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public String sendEmail(ContactDetails contact) {
 		
-		LOGGER.log(Level.INFO, "#################### Hitting sendEmail() in ServiceImpl Layer ###################");
+		LOGGER.log(Level.INFO, "########## Entered into sendEmail() in ServiceImpl Layer ##########");
 
 		String emailBody = "Dear, " + contact.getName() + "\n\n"
 				+ "I hope you are having a productive day.\n\nI greatly appreciate the time you spent for visiting my Portfolio.\n\n"
@@ -212,7 +227,7 @@ public class ReportServiceImpl implements ReportService {
 
 		String subject = "Welcome to DillipFolio – Thanks for Visiting !!";
 		
-		LOGGER.log(Level.INFO, "########## Email Body ########## :: Email Content :: ",emailBody);
+		LOGGER.log(Level.INFO, "########## Email Body ########## :: Email Content :: "+emailBody);
 
 		SimpleMailMessage message = new SimpleMailMessage();
 
@@ -223,7 +238,7 @@ public class ReportServiceImpl implements ReportService {
 
 		mailSender.send(message);
 
-		LOGGER.log(Level.INFO, "########## Mail has been send Successfully ##########");
+		LOGGER.log(Level.INFO, "########## Mail has been send Successfully :: SUCCESS ##########");
 
 		ContactDetails contactDetails = new ContactDetails();
 		contactDetails.setName(contact.getName());
@@ -238,12 +253,13 @@ public class ReportServiceImpl implements ReportService {
 	public List<UniversityDetailsDTO> getUniversityDetailsByCountryName(String countryName) {
 		List<ConsumeUniversityBody> body = null;
 		List<UniversityDetailsDTO> listUniversity = new ArrayList<UniversityDetailsDTO>();
-		String uri = "http://universities.hipolabs.com/search?country=" + countryName;
+		String apiUrl = universityDetailsUrl+"?country=" + countryName;
 
 		try {
-			RestTemplate restTemplate = new RestTemplate();
-			ConsumeUniversityBody[] response = restTemplate.getForObject(uri, ConsumeUniversityBody[].class);
-			body = Arrays.asList(response);
+			LOGGER.log(Level.INFO, "########## Entered in getUniversityDetailsByCountryName() in ServiceImpl Layer :: apiUrl :: "+apiUrl);
+			String fetchDataFromOtherApi = commonServiceImpl.fetchDataFromOtherApi(apiUrl);
+			ConsumeUniversityBody[] fromJson = gson.fromJson(fetchDataFromOtherApi, ConsumeUniversityBody[].class);
+			body = Arrays.asList(fromJson);
 
 			for (int i = 0; i < body.size(); i++) {
 				UniversityDetailsDTO dto = new UniversityDetailsDTO();
@@ -251,12 +267,12 @@ public class ReportServiceImpl implements ReportService {
 				dto.setCountryCode(body.get(i).getAlpha_two_code());
 				dto.setCountryName(body.get(i).getCountry());
 				dto.setUniversityName(body.get(i).getName());
-				dto.setUniversityWebsite(body.get(i).getWeb_pages()[0]);
+				dto.setUniversityWebsite(body.get(i).getWeb_pages()[0]);	
 
 				listUniversity.add(dto);
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "########## Exception Occured ##########", e);
+			LOGGER.log(Level.INFO, "########## Exception Occured in getUniversityDetailsByCountryName() in ServiceImpl Layer ########## "+e);
 		}
 		return listUniversity;
 	}

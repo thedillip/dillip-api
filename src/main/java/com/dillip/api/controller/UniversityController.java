@@ -37,7 +37,7 @@ public class UniversityController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		List<UniversityDetailsDTO> response = null;
-		LOGGER.log(Level.INFO, "############# getUniversityDetails() :: countryName :: " + countryName);
+		LOGGER.log(Level.INFO, "############# Hitting getUniversityDetails() in Controller Layer :: countryName :: " + countryName);
 		try {
 			response = reportService.getUniversityDetailsByCountryName(countryName);
 			if (!response.isEmpty()) {
@@ -48,7 +48,7 @@ public class UniversityController {
 				message = ProjectConstant.DATA_NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "########## Exception Occured ##########", e);
+			LOGGER.log(Level.INFO, "########## Exception Occured in getUniversityDetails() in Controller Layer ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}

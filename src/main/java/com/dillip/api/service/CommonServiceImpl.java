@@ -49,7 +49,7 @@ public class CommonServiceImpl implements CommonService {
 		String apiUrl = randomQuoteUrl;
 		String fetchDataFromOtherApi = fetchDataFromOtherApi(apiUrl);
 		try {
-			LOGGER.log(Level.INFO, "############# Hitting getRandomQuote() ServiceImpl Layer ##########");
+			LOGGER.log(Level.INFO, "############# Hitting getRandomQuote() ServiceImpl Layer :: apiUrl :: "+apiUrl);
 			if(fetchDataFromOtherApi != null)
 			{
 				response = gson.fromJson(fetchDataFromOtherApi, RandomQuoteDTO.class);
@@ -61,7 +61,7 @@ public class CommonServiceImpl implements CommonService {
 				response.setContent("The greatest battle are fought with the closest people.");
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured in getRandomQuote() ServiceImpl Layer ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getRandomQuote() in ServiceImpl Layer ##########"+e);
 		}
 		return response;
 	}
@@ -69,6 +69,7 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public List<PostOfficeDetailsResponse> getPostOfficeDetailsByPinCode(String pinCode) {
 		String apiUrl = pinCodeUrl+"pincode/"+pinCode;
+		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCode() ServiceImpl Layer :: apiUrl :: "+apiUrl);
 		List<PostOfficeDetailsResponse> reList = getPostOfficeDetailsByPinCodeOrBranchName(apiUrl);
 		return reList;
 	}
@@ -76,6 +77,7 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public List<PostOfficeDetailsResponse> getPostOfficeDetailsByBranchName(String branchName) {
 		String apiUrl = pinCodeUrl+"postoffice/"+branchName;
+		LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByBranchName() ServiceImpl Layer :: apiUrl :: "+apiUrl);
 		List<PostOfficeDetailsResponse> reList = getPostOfficeDetailsByPinCodeOrBranchName(apiUrl);
 		return reList;
 	}
@@ -84,6 +86,7 @@ public class CommonServiceImpl implements CommonService {
 	public BankDetailsResponse getBankDetailsByIfsc(String ifscCode) {
 		BankDetailsResponse response = null;
 		String apiUrl = bankDetailsUrl+ifscCode;
+		LOGGER.log(Level.INFO, "############# Hitting getBankDetailsByIfsc() ServiceImpl Layer :: apiUrl :: "+apiUrl);
 		String fetchDataFromOtherApi = fetchDataFromOtherApi(apiUrl);
 		try {
 			if(fetchDataFromOtherApi != null)
@@ -104,11 +107,11 @@ public class CommonServiceImpl implements CommonService {
 					response.setBankName(fetchBankDetailsByIfsc.getBANK());
 					response.setBankCode(fetchBankDetailsByIfsc.getBANKCODE());
 					response.setIfscCode(fetchBankDetailsByIfsc.getIFSC());
-					LOGGER.log(Level.INFO, "############# Hitting getBankDetailsByIfsc() ServiceImpl Layer ##########");
+					LOGGER.log(Level.INFO, "############# Executed Logic in getBankDetailsByIfsc() in ServiceImpl Layer ##########");
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured in getBankDetailsByIfsc() ServiceImpl Layer ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getBankDetailsByIfsc() ServiceImpl Layer ##########"+e);
 		}
 		return response;
 	}
@@ -119,7 +122,7 @@ public class CommonServiceImpl implements CommonService {
 		List<PostOfficeDetailsResponse> reList = new ArrayList<>();
 		String fetchDataFromOtherApi = fetchDataFromOtherApi(apiUrl);
 		try {
-			LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCodeOrBranchName() ServiceImpl Layer ##########");
+			LOGGER.log(Level.INFO, "############# Hitting getPostOfficeDetailsByPinCodeOrBranchName() ServiceImpl Layer :: apiUrl ########## "+apiUrl);
 			if(fetchDataFromOtherApi != null)
 			{
 				response = gson.fromJson(fetchDataFromOtherApi, PinCodeDetailsDTO[].class);
@@ -150,7 +153,7 @@ public class CommonServiceImpl implements CommonService {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByPinCodeOrBranchName() ServiceImpl Layer ##########", e);
+			LOGGER.log(Level.INFO, "############# Exception Occured in getPostOfficeDetailsByPinCodeOrBranchName() ServiceImpl Layer ##########"+e);
 		}
 		return reList;
 	}
@@ -161,7 +164,7 @@ public class CommonServiceImpl implements CommonService {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add("Content-Type", "application/json");
 		headers.add("Accept", "application/json");
-
+		LOGGER.log(Level.INFO,"###### APIURL :: "+apiUrl);
 		try {
 			ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, new HttpEntity<>(headers),
 					String.class);

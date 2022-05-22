@@ -56,6 +56,7 @@ public class ReportController {
 			{
 				message = "API has been Started";
 				status = HttpStatus.OK;
+				LOGGER.log(Level.INFO, "########## API is UP ##########");
 			}
 			else
 			{
@@ -65,7 +66,7 @@ public class ReportController {
 		} 
 		catch (Exception e) 
 		{
-			LOGGER.log(Level.INFO, "########## Exception Occured ##########",e);
+			LOGGER.log(Level.INFO, "########## Exception Occured ########## "+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -82,7 +83,7 @@ public class ReportController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		MediaFile response = null;
-		LOGGER.log(Level.INFO, "########## Hitting generateReport() in Controller ########## :: WeightSlipRequest :: ",weightSlipRequest);
+		LOGGER.log(Level.INFO, "########## Hitting generateReport() in Controller ########### :: WeightSlipRequest :: "+weightSlipRequest);
 		try 
 		{
 			response = reportService.exportReport(weightSlipRequest);
@@ -100,7 +101,7 @@ public class ReportController {
 		} 
 		catch (Exception e) 
 		{
-			LOGGER.log(Level.INFO, "########## Exception Occured ##########",e);
+			LOGGER.log(Level.INFO, "########## Exception Occured ########## "+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -109,15 +110,16 @@ public class ReportController {
 	
 	@Operation(summary = "Find All Weight Slip Details")
 	@GetMapping(path = "/weightslipdetails")
-	public ResponseEntity<ApiResponseObject> findReportDetails()
+	public ResponseEntity<ApiResponseObject> findAllWeightSlipDetails()
 	{
 		HttpStatus status = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		List<ReportResponse> response = null;
+		LOGGER.log(Level.INFO, "########## Hitting findAllWeightSlipDetails() in Controller Layer ##########");
 		try 
 		{
-			response = reportService.findAll();
+			response = reportService.findAllWeightSlipDetails();
 			
 			if(!response.isEmpty())
 			{
@@ -132,7 +134,7 @@ public class ReportController {
 		} 
 		catch (Exception e) 
 		{
-			LOGGER.log(Level.INFO, "########## Exception Occured ##########",e);
+			LOGGER.log(Level.INFO, "########## Exception Occured in findAllWeightSlipDetails() in Controller Layer ########## "+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -147,6 +149,7 @@ public class ReportController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		List<ReportResponse> response = null;
+		LOGGER.log(Level.INFO, "########## Hitting findReportDetailsByVehicleNumber() in Controller Layer :: vehicleNumber :: "+vehicleNumber);
 		try 
 		{
 			response = reportService.findByVehicleNumber(vehicleNumber);
@@ -164,7 +167,7 @@ public class ReportController {
 		} 
 		catch (Exception e) 
 		{
-			LOGGER.log(Level.INFO, "########## Exception Occured ##########",e);
+			LOGGER.log(Level.INFO, "########## Exception Occured in findReportDetailsByVehicleNumber() in Controller Layer ########## "+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -179,6 +182,7 @@ public class ReportController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		String response = null;
+		LOGGER.log(Level.INFO, "########## Hitting deleteAllWeightSlipRecord() in Controller Layer ##########");
 		try 
 		{
 			response = reportService.deleteAllWeightSlip();
@@ -196,7 +200,7 @@ public class ReportController {
 		} 
 		catch (Exception e) 
 		{
-			LOGGER.log(Level.INFO, "########## Exception Occured ##########",e);
+			LOGGER.log(Level.INFO, "########## Exception Occured in deleteAllWeightSlipRecord() in Controller Layer ########## "+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -211,7 +215,7 @@ public class ReportController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		String response = null;
-		LOGGER.log(Level.INFO, "########## Hitting sendEmail() in Controller Layer :: ContactDetails :: ",contact);
+		LOGGER.log(Level.INFO, "########## Hitting sendEmail() in Controller Layer :: ContactDetails :: " + contact);
 		try 
 		{
 			response = reportService.sendEmail(contact);
@@ -229,7 +233,7 @@ public class ReportController {
 		} 
 		catch (Exception e) 
 		{
-			LOGGER.log(Level.INFO, "########## Exception Occured ##########",e);
+			LOGGER.log(Level.INFO, "########## Exception Occured sendEmail() in Controller Layer ########## "+e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}

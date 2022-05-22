@@ -2,6 +2,8 @@ package com.dillip.api.request;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class WeightSlipRequest {
 	private String address;
 	private String vehicleNumber;
@@ -9,6 +11,7 @@ public class WeightSlipRequest {
 	private String tareWeight;
 	private LocalDateTime grossWeightDate;
 	private LocalDateTime tareWeightDate;
+	@JsonIgnore
 	private String message;
 	private boolean checked;
 	
@@ -63,5 +66,11 @@ public class WeightSlipRequest {
 	}
 	public void setChecked(boolean checked) {
 		this.checked = checked;
+	}
+	@Override
+	public String toString() {
+		return "WeightSlipRequest [address=" + address + ", vehicleNumber=" + vehicleNumber + ", grossWeight="
+				+ grossWeight + ", tareWeight=" + tareWeight + ", grossWeightDate=" + grossWeightDate
+				+ ", tareWeightDate=" + tareWeightDate + ", checked=" + checked + "]";
 	}
 }
