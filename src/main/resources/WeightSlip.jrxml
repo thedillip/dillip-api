@@ -29,13 +29,6 @@
 	</background>
 	<title>
 		<band height="98" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="30" width="760" height="40" uuid="a3e207bf-17e0-425a-88b1-0867f47dd768"/>
-				<textElement textAlignment="Center">
-					<font size="26" isBold="true"/>
-				</textElement>
-				<text><![CDATA[* WEIGHT BRIDGE, BOUDH *]]></text>
-			</staticText>
 			<line>
 				<reportElement x="-1" y="0" width="1" height="94" uuid="607edc0e-4257-493c-92f7-c5e883ddd53d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -56,6 +49,13 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 			</line>
+			<textField>
+				<reportElement x="0" y="33" width="760" height="35" uuid="bf36c736-8d25-4233-9fa5-60ae719918f1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="26" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["* WEIGHT BRIDGE, "+$P{address}.toUpperCase()+" *"]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<columnHeader>
