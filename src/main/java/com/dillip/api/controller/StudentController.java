@@ -1,8 +1,6 @@
 package com.dillip.api.controller;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -26,195 +24,174 @@ import com.dillip.api.util.ProjectConstant;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @CrossOrigin
+@Slf4j
 public class StudentController {
-	
-	private final static Logger LOGGER = Logger.getLogger("Dillip Logger");
-	
+
 	@Autowired
 	private StudentService studentService;
-	
+
 	@Operation(summary = "saveStudentDetails")
-	@PostMapping(path = "/student",consumes = "application/json",produces = "application/json")
+	@PostMapping(path = "/student", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<ApiResponseObject> addStudent(
-			@Parameter(name = "in_StudentRequest",description = "StudentRequest",required = true) @RequestBody StudentRequest studentRequest)
-	{	
-		
+			@Parameter(name = "in_StudentRequest", description = "StudentRequest", required = true) @RequestBody StudentRequest studentRequest) {
+
 		HttpStatus status = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		String response = null;
-		LOGGER.log(Level.INFO, "############# addStudent() :: StudentRequest :: " + studentRequest);
+		log.info("############# addStudent() :: StudentRequest :: " + studentRequest);
 		try {
 			response = studentService.addStudent(studentRequest);
-			if(response.equals(ProjectConstant.SUCCESS_MSG))
-			{
+			if (response.equals(ProjectConstant.SUCCESS_MSG)) {
 				message = ProjectConstant.CREATED_MSG;
 				status = HttpStatus.CREATED;
-			}
-			else
-			{
+			} else {
 				message = "Sorry ! An Error Occured While Saving the Resource";
 				status = HttpStatus.BAD_REQUEST;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		
+
 		return new ResponseEntity<>(new ApiEntity<String>(message, response), httpHeaders, status);
 	}
-	
+
 	@Operation(summary = "getAllStudentsDetails")
-	@GetMapping(path = "/student",produces = "application/json")
-	public ResponseEntity<ApiResponseObject> findAllStudentDetails()
-	{
+	@GetMapping(path = "/student", produces = "application/json")
+	public ResponseEntity<ApiResponseObject> findAllStudentDetails() {
 		HttpStatus status = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		List<StudentDTO> response = null;
-		
+
 		try {
 			response = studentService.findAllStudentDetails();
-			if (!response.isEmpty()) 
-			{
+			if (!response.isEmpty()) {
 				message = ProjectConstant.DATA_FOUND;
 				status = HttpStatus.OK;
-			}
-			else
-			{
+			} else {
 				message = ProjectConstant.DATA_NOT_FOUND;
 				status = HttpStatus.NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		
+
 		return new ResponseEntity<>(new ApiEntity<List<StudentDTO>>(message, response), httpHeaders, status);
 	}
-	
+
 	@Operation(summary = "getStudentDetailsByRollNo")
-	@GetMapping(path = "/student/{roll_no}",produces = "application/json")
+	@GetMapping(path = "/student/{roll_no}", produces = "application/json")
 	public ResponseEntity<ApiResponseObject> findStudentDetailsByRollNumber(
-			@Parameter(description = "Integer",required = true) @PathVariable(name = "roll_no",required = true) int rollNo)
-	{
+			@Parameter(description = "Integer", required = true) @PathVariable(name = "roll_no", required = true) int rollNo) {
 		HttpStatus status = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		StudentDTO response = null;
-		LOGGER.log(Level.INFO, "############# findStudentDetailsByRollNumber() :: roll_no :: " + rollNo);
+		log.info("############# findStudentDetailsByRollNumber() :: roll_no :: " + rollNo);
 		try {
 			response = studentService.findStudentDetailsByRollNumber(rollNo);
-			if(response != null)
-			{
+			if (response != null) {
 				status = HttpStatus.OK;
 				message = ProjectConstant.DATA_FOUND;
-			}
-			else
-			{
+			} else {
 				status = HttpStatus.NOT_FOUND;
 				message = ProjectConstant.DATA_NOT_FOUND;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		
+
 		return new ResponseEntity<>(new ApiEntity<StudentDTO>(message, response), httpHeaders, status);
 	}
-	
+
 	@Operation(summary = "updateStudentDetailsByRollNo")
 	@PutMapping(path = "/student/{roll_no}")
 	public ResponseEntity<ApiResponseObject> updateStudentDetailsByRollNumber(
-		@Parameter(description = "Integer",required = true) @PathVariable(name = "roll_no" , required = true) int rollNo,
-		@Parameter(name = "in_StudentRequest",description = "StudentRequest",required = true) @RequestBody(required = true) StudentRequest request)
-	{
+			@Parameter(description = "Integer", required = true) @PathVariable(name = "roll_no", required = true) int rollNo,
+			@Parameter(name = "in_StudentRequest", description = "StudentRequest", required = true) @RequestBody(required = true) StudentRequest request) {
 		HttpStatus status = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		String response = null;
-		LOGGER.log(Level.INFO, "############# updateStudentDetailsByRollNumber() :: roll_no :: " + rollNo+" :: StudentRequest :: "+request);
+		log.info("############# updateStudentDetailsByRollNumber() :: roll_no :: " + rollNo
+				+ " :: StudentRequest :: " + request);
 		try {
 			response = studentService.updateStudentDetailsByRollNumber(rollNo, request);
-			if(response.equals(ProjectConstant.SUCCESS_MSG))
-			{
+			if (response.equals(ProjectConstant.SUCCESS_MSG)) {
 				status = HttpStatus.OK;
 				message = ProjectConstant.UPDATED_MSG;
-			}
-			else if(response.equals(ProjectConstant.NOT_PRESENT))
-			{
+			} else if (response.equals(ProjectConstant.NOT_PRESENT)) {
 				status = HttpStatus.NOT_FOUND;
 				message = ProjectConstant.RESOURCE_NOT_PRESENT;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		
+
 		return new ResponseEntity<>(new ApiEntity<String>(message, response), httpHeaders, status);
-		
+
 	}
-	
+
 	@Operation(summary = "deleteStudentDetailsByRollNo")
 	@DeleteMapping(path = "/student/{roll_no}")
 	public ResponseEntity<ApiResponseObject> deleteStudentByRollNumber(
-		 @Parameter(description = "Integer",required = true) @PathVariable(name = "roll_no",required = true) int rollNo)
-	{
+			@Parameter(description = "Integer", required = true) @PathVariable(name = "roll_no", required = true) int rollNo) {
 		HttpStatus status = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		String response = null;
-		LOGGER.log(Level.INFO, "############# deleteStudentByRollNumber() :: roll_no :: " + rollNo);
+		log.info("############# deleteStudentByRollNumber() :: roll_no :: " + rollNo);
 		try {
 			response = studentService.deleteStudentByRollNumber(rollNo);
-			if(response.equals(ProjectConstant.SUCCESS_MSG))
-			{
+			if (response.equals(ProjectConstant.SUCCESS_MSG)) {
 				status = HttpStatus.OK;
 				message = ProjectConstant.DELETED_MSG;
-			}
-			else if(response.equals(ProjectConstant.NOT_PRESENT));
+			} else if (response.equals(ProjectConstant.NOT_PRESENT))
+				;
 			{
 				status = HttpStatus.NOT_FOUND;
 				message = ProjectConstant.RESOURCE_NOT_PRESENT;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity<>(new ApiEntity<String>(message, response), httpHeaders, status);
 	}
-	
+
 	@Operation(summary = "deleteAllStudentDetailsByRollNo")
 	@DeleteMapping(path = "/student")
-	public ResponseEntity<ApiResponseObject> deleteAllStudent()
-	{
+	public ResponseEntity<ApiResponseObject> deleteAllStudent() {
 		HttpStatus status = null;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		String message = null;
 		String response = null;
 		try {
 			response = studentService.deleteAllStudent();
-			if(response.equals(ProjectConstant.SUCCESS_MSG))
-			{
+			if (response.equals(ProjectConstant.SUCCESS_MSG)) {
 				status = HttpStatus.OK;
 				message = ProjectConstant.DELETED_MSG;
-			}
-			else
-			{
+			} else {
 				status = HttpStatus.NOT_FOUND;
 				message = ProjectConstant.RESOURCE_NOT_PRESENT;
 				response = ProjectConstant.NOT_PRESENT;
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = e.getMessage();
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}

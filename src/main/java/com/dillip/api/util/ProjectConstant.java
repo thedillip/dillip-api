@@ -5,9 +5,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class ProjectConstant {
 
 	// constant variable

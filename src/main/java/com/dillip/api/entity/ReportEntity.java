@@ -9,8 +9,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "tbl_report_data")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ReportEntity {
 	
 	@Id
@@ -41,82 +50,4 @@ public class ReportEntity {
 	
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
-
-	public ReportEntity() {
-		super();
-	}
-
-	public int getReportSlNo() {
-		return reportSlNo;
-	}
-
-	public void setReportSlNo(int reportSlNo) {
-		this.reportSlNo = reportSlNo;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getVehicleNumber() {
-		return vehicleNumber;
-	}
-
-	public void setVehicleNumber(String vehicleNumber) {
-		this.vehicleNumber = vehicleNumber;
-	}
-
-	public String getGrossWeight() {
-		return grossWeight;
-	}
-
-	public void setGrossWeight(String grossWeight) {
-		this.grossWeight = grossWeight;
-	}
-
-	public String getTareWeight() {
-		return tareWeight;
-	}
-
-	public void setTareWeight(String tareWeight) {
-		this.tareWeight = tareWeight;
-	}
-
-	public String getNetWeight() {
-		return netWeight;
-	}
-
-	public void setNetWeight(String netWeight) {
-		this.netWeight = netWeight;
-	}
-
-	public LocalDateTime getGrossWeightDate() {
-		return grossWeightDate;
-	}
-
-	public void setGrossWeightDate(LocalDateTime grossWeightDate) {
-		this.grossWeightDate = grossWeightDate;
-	}
-
-	public LocalDateTime getTareWeightDate() {
-		return tareWeightDate;
-	}
-
-	public void setTareWeightDate(LocalDateTime tareWeightDate) {
-		this.tareWeightDate = tareWeightDate;
-	}
-
-	public LocalDateTime getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(LocalDateTime createdDate) {
-		this.createdDate = createdDate;
-	}
-	
-	
 }

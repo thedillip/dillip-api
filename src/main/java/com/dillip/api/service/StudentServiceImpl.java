@@ -3,8 +3,6 @@ package com.dillip.api.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,17 +13,15 @@ import com.dillip.api.repository.StudentRepository;
 import com.dillip.api.request.StudentRequest;
 import com.dillip.api.util.ProjectConstant;
 
-
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class StudentServiceImpl implements StudentService {
-	
-	private final static Logger LOGGER = Logger.getLogger("Dillip Logger");
-	
+
 	@Autowired
 	private StudentRepository studentRepository;
-	
-	
+
 	@Override
 	public String addStudent(StudentRequest student) {
 
@@ -39,10 +35,10 @@ public class StudentServiceImpl implements StudentService {
 			reStudent.setGender(student.getGender());
 			reStudent.setMobileNumber(student.getMobileNumber());
 			studentRepository.save(reStudent);
-			LOGGER.log(Level.INFO, "################ Student Record has been added Successfully ##############");
+			log.info("################ Student Record has been added Successfully ##############");
 			message = ProjectConstant.SUCCESS_MSG;
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 		}
 
 		return message;
@@ -50,15 +46,13 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<StudentDTO> findAllStudentDetails() {
-		
+
 		List<Student> student = null;
 		List<StudentDTO> retList = new ArrayList<>();
-		
-		try 
-		{
+
+		try {
 			student = studentRepository.findAll();
-			for(Student tempStudent : student)
-			{
+			for (Student tempStudent : student) {
 				StudentDTO tempStudentDto = new StudentDTO();
 				tempStudentDto.setStudentName(tempStudent.getStudentName());
 				tempStudentDto.setMobileNumber(tempStudent.getMobileNumber());
@@ -67,21 +61,19 @@ public class StudentServiceImpl implements StudentService {
 				tempStudentDto.setRollNumber(tempStudent.getRollNo());
 				retList.add(tempStudentDto);
 			}
-		} 
-		catch (Exception e) 
-		{
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+		} catch (Exception e) {
+			log.info("############# Exception Occured ##########", e);
 		}
 		retList.sort((studentObj1, studentObj2) -> (studentObj1.getRollNumber() < studentObj2.getRollNumber()) ? -1
 				: (studentObj1.getRollNumber() > studentObj2.getRollNumber()) ? +1 : 0);
 		return retList;
 	}
-	
+
 	@Override
-	public StudentDTO findStudentDetailsByRollNumber(int rollNo){
+	public StudentDTO findStudentDetailsByRollNumber(int rollNo) {
 		Optional<Student> student = null;
 		StudentDTO reStudent = null;
-		
+
 		try {
 			student = studentRepository.findById(rollNo);
 			if (student.isPresent()) {
@@ -94,33 +86,31 @@ public class StudentServiceImpl implements StudentService {
 				reStudent.setRollNumber(tempStudent.getRollNo());
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 		}
 		return reStudent;
 	}
-	
+
 	@Override
-	public String updateStudentDetailsByRollNumber(int rollNo,StudentRequest studentRequest) {
+	public String updateStudentDetailsByRollNumber(int rollNo, StudentRequest studentRequest) {
 		String message = null;
 		Optional<Student> student = null;
 		try {
 			student = studentRepository.findById(rollNo);
-			if(student.isPresent())
-			{
+			if (student.isPresent()) {
 				Student tempStudent = student.get();
 				tempStudent.setStudentName(studentRequest.getName());
 				tempStudent.setMobileNumber(studentRequest.getMobileNumber());
 				tempStudent.setGender(studentRequest.getGender());
 				tempStudent.setAge(studentRequest.getAge());
 				studentRepository.save(tempStudent);
-				LOGGER.log(Level.INFO, "############# Student Resource has been Updated Successfully ##########");
+				log.info("############# Student Resource has been Updated Successfully ##########");
 				message = ProjectConstant.SUCCESS_MSG;
-			}
-			else
+			} else
 				message = ProjectConstant.NOT_PRESENT;
-				
+
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = ProjectConstant.ERR_MSG;
 		}
 		return message;
@@ -130,20 +120,18 @@ public class StudentServiceImpl implements StudentService {
 	public String deleteStudentByRollNumber(int rollNo) {
 		String message = null;
 		Optional<Student> student = null;
-		
+
 		try {
 			student = studentRepository.findById(rollNo);
-			if(student.isPresent())
-			{
+			if (student.isPresent()) {
 				Student tempStudent = student.get();
 				studentRepository.deleteById(tempStudent.getRollNo());
-				LOGGER.log(Level.INFO, "############# Student Resource has been Deleted Successfully ##########");
+				log.info("############# Student Resource has been Deleted Successfully ##########");
 				message = ProjectConstant.SUCCESS_MSG;
-			}
-			else
+			} else
 				message = ProjectConstant.NOT_PRESENT;
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = ProjectConstant.ERR_MSG;
 		}
 		return message;
@@ -154,16 +142,14 @@ public class StudentServiceImpl implements StudentService {
 		String message = null;
 		try {
 			List<Student> student = studentRepository.findAll();
-			if(!student.isEmpty())
-			{
+			if (!student.isEmpty()) {
 				studentRepository.deleteAll();
-				LOGGER.log(Level.INFO, "############# All Student Resource has been Deleted Successfully ##########");
+				log.info("############# All Student Resource has been Deleted Successfully ##########");
 				message = ProjectConstant.SUCCESS_MSG;
-			}
-			else
+			} else
 				message = ProjectConstant.NOT_PRESENT;
 		} catch (Exception e) {
-			LOGGER.log(Level.INFO, "############# Exception Occured ##########", e);
+			log.info("############# Exception Occured ##########", e);
 			message = ProjectConstant.ERR_MSG;
 		}
 		return message;

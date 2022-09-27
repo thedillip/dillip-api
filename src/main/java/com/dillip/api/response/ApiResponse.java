@@ -1,4 +1,4 @@
-package com.student.api.response;
+package com.dillip.api.response;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +19,6 @@ public class ApiResponse {
 	}
 	public ApiResponse() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public ApiResponse(LocalDateTime timestamp, String message) {
 		super();
